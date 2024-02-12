@@ -5,6 +5,7 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { useState } from "react";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -19,12 +20,44 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 function Register() {
+  const [inputValue, setInputValue] = useState("");
+  const [error, setError] = useState("");
+
+  const regexPattern = /^[1-9]\d*$/; // any positive number except 0
+
+  const handleInputChange = (event) => {
+    const newValue = event.target.value;
+    setInputValue(newValue);
+    validateInput(newValue);
+  };
+
+  const validateInput = (value) => {
+    if(!value){
+      setError("")
+    }
+    else if (!regexPattern.test(value)) {
+      setError("Input must contain only positive numbers.");
+    } else {
+      setError("");
+    }
+  };
   return (
     <>
       <h1 className="header">הרשמה</h1>
-    <div className="container ">
-      <Box sx={{ display: "flex", flexDirection: "row",gap:"100px", border:"1px solid #dedede", padding:"50px",borderRadius:"15px",boxShadow:"3px 3px 5px #87878729",backgroundColor:"#fff"}}>
-      <Box
+      <div className="container ">
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            gap: "100px",
+            border: "1px solid #dedede",
+            padding: "50px",
+            borderRadius: "15px",
+            boxShadow: "3px 3px 5px #87878729",
+            backgroundColor: "#fff",
+          }}
+        >
+          <Box
             sx={{
               display: "flex",
               flexDirection: "column",
@@ -33,64 +66,95 @@ function Register() {
               gap: "20px",
             }}
           >
-
-          <TextField sx={{width:"300px"}} id="outlined-basic" label='דוא"ל' variant="outlined" />
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker sx={{width:"300px"}} />
-          </LocalizationProvider>
-          <Autocomplete sx={{width:"300px"}}
-            disablePortal
-            id="combo-box"
-            options={["א", "ב"]}
-            renderInput={(params) => <TextField {...params} label="עיר" />}
-          />
-          <TextField sx={{width:"300px"}} id="outlined-basic" label='רחוב' variant="outlined" />
-          <TextField sx={{width:"300px"}} id="outlined-basic" label='מספר בית' variant="outlined" />
-
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            gap:"20px",
-          }}
-        >
-          <TextField sx={{width:"300px"}} id="outlined-basic" label="שם משתמש" variant="outlined" />
-          <TextField sx={{width:"300px"}}
-            id="password-input"
-            label="הזן סיסמא"
-            type="password"
-            autoComplete="current-password"
-          />
-          <TextField sx={{width:"300px"}}
-            id="password-validate-input"
-            label="הזן סיסמה בשנית"
-            type="password"
-            autoComplete="current-password"
-          />
-          <Button sx={{width:"300px"}}
-            component="label"
-            variant="contained"
-            startIcon={<CloudUploadIcon />}
-          >
-            העלה תמונה
-            <VisuallyHiddenInput type="file" />
-          </Button>
-          <TextField sx={{width:"300px"}}
-            id="outlined-basic"
-            label="שם פרטי"
-            variant="outlined"
-          />
-          <TextField sx={{width:"300px"}} id="outlined-basic" label="שם משפחה" variant="outlined" />
-
+            <TextField
+              sx={{ width: "300px" }}
+              id="outlined-basic"
+              label='דוא"ל'
+              variant="outlined"
+            />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker sx={{ width: "300px" }} />
+            </LocalizationProvider>
+            <Autocomplete
+              sx={{ width: "300px" }}
+              disablePortal
+              id="combo-box"
+              options={["א", "ב"]}
+              renderInput={(params) => <TextField {...params} label="עיר" />}
+            />
+            <TextField
+              sx={{ width: "300px" }}
+              id="outlined-basic"
+              label="רחוב"
+              variant="outlined"
+            />
+            <TextField
+            value={inputValue}
+              onChange={handleInputChange}
+              error={!!error} // Converts string to boolean
+              helperText={error}
+              sx={{ width: "300px" }}
+              id="outlined-basic"
+              label="מספר בית"
+              variant="outlined"
+            />
           </Box>
-          
-      </Box>
-      <Button sx={{width:"200px", margin:"20px"}} variant="contained">הרשם</Button>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "20px",
+            }}
+          >
+            <TextField
+              sx={{ width: "300px" }}
+              id="outlined-basic"
+              label="שם משתמש"
+              variant="outlined"
+            />
+            <TextField
+              sx={{ width: "300px" }}
+              id="password-input"
+              label="הזן סיסמא"
+              type="password"
+              autoComplete="current-password"
+            />
+            <TextField
+              sx={{ width: "300px" }}
+              id="password-validate-input"
+              label="הזן סיסמה בשנית"
+              type="password"
+              autoComplete="current-password"
+            />
+            <Button
+              sx={{ width: "300px" }}
+              component="label"
+              variant="contained"
+              startIcon={<CloudUploadIcon />}
+            >
+              העלה תמונה
+              <VisuallyHiddenInput type="file" />
+            </Button>
+            <TextField
+              sx={{ width: "300px" }}
+              id="outlined-basic"
+              label="שם פרטי"
+              variant="outlined"
+            />
+            <TextField
+              sx={{ width: "300px" }}
+              id="outlined-basic"
+              label="שם משפחה"
+              variant="outlined"
+            />
+          </Box>
+        </Box>
+        <Button sx={{ width: "200px", margin: "20px" }} variant="contained">
+          הרשם
+        </Button>
       </div>
-
     </>
   );
 }
