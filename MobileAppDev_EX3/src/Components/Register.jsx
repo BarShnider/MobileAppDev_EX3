@@ -5,7 +5,7 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -31,6 +31,8 @@ function Register() {
   const [userData, setUserData] = useState({
     userName: "",
     email: "",
+    password: "",
+    passwordValidate: "",
     birthDay: "",
     city: "",
     houseNumber: "",
@@ -41,6 +43,8 @@ function Register() {
   const [userErrors, setUserErrors] = useState({
     userName: "",
     email: "",
+    password: "",
+    passwordValidate: "",
     birthDay: "",
     city: "",
     houseNumber: "",
@@ -49,13 +53,11 @@ function Register() {
     lastName: "",
   });
 
-  //const [error, setError] = useState("");
+  const [IsFormValid, setIsFormValid] = useState(false);
 
   const regexPatternNumbers = /^[1-9]\d*$/; // any positive number except 0
-  const regexPatternPassword =
-    /^(?=.*[!@#$%^&*()_+{}|:"<>?])(?=.*[A-Z])(?=.*\d).{7,12}$/;
-  const regexPatternUserName =
-    /^[a-zA-Z0-9\u00C0-\u00FF!@#$%^&*()_+{}|:"<>?]*$/;
+  const regexPatternPassword = /^(?=.*[!@#$%^&*()_+{}|:"<>?])(?=.*[A-Z])(?=.*\d).{7,12}$/;
+    const regexPatternUserName = /^[a-zA-Z0-9\u00C0-\u00FF!@#$%^&*()_+{}|:"<>?]{1,60}$/ // limited to length 60 
   const regexPatternString = /^[a-zA-Z\u00C0-\u00FF]+$/;
   const regexPatternStreet = /^[\u0590-\u05FF]+$/;
   const regexPatternEmail = /^[a-zA-Z@]+\.com$/;
@@ -70,12 +72,12 @@ function Register() {
     //to do switch case !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! for all erros.
     switch (fieldError) {
       case "password":
-        if (!regexPatternPassword.test(value) || value === "") {
+        if (regexPatternPassword.test(value) || value === "") {
           setUserErrors({ ...userErrors, [fieldError]: "" });
         } else {
           setUserErrors({
             ...userErrors,
-            [fieldError]: "Input must contain only positive numbers",
+            [fieldError]: "הסיסמה חייבת להכין בין 7 ל- 12 תווים. יש לוודא שיש לפחות תו אחד מיוחד, אות גדולה ומספר",
           });
         }
         break;
@@ -86,7 +88,7 @@ function Register() {
           setUserErrors({
             ...userErrors,
             [fieldError]:
-              "Input must contain only English letters, numbers, and special characters",
+              "ניתן למלא אותיות לועזיות בלבד, מספרים ותווים מיוחדים, לכל היותר באורך 60 תווים.",
           });
         }
         break;
@@ -96,7 +98,7 @@ function Register() {
         } else {
           setUserErrors({
             ...userErrors,
-            [fieldError]: "Input must contain only letters",
+            [fieldError]: "ניתן למלא טקסט בלבד",
           });
         }
         break;
@@ -106,7 +108,7 @@ function Register() {
         } else {
           setUserErrors({
             ...userErrors,
-            [fieldError]: "Input must contain only letters",
+            [fieldError]: "ניתן למלא טקסט בלבד",
           });
         }
         break;
@@ -136,18 +138,48 @@ function Register() {
         } else {
           setUserErrors({
             ...userErrors,
-            [fieldError]: "Input wrong (example@example.com)",
+            [fieldError]: "ניתן להזין אותיות לועזיות בלבד ותווים מיוחדים, התו @ מופיע פעם אחת בלבד, בסוף הטקסט יש .com בלבד",
           });
         }
         break;
     }
   };
 
-  const handleEmailChange = (event) => {
-    setUserData({ ...userData, ["email"]: event.target.value });
-  };
+  // const handleEmailChange = (event) => {
+  //   setUserData({ ...userData, ["email"]: event.target.value });
+  // };
 
-  function registerUser() {}
+  const ValidateForm = () => {
+    setIsFormValid(false); // Assume the form is invalid initially
+    for (let f in userErrors) {
+      if (userErrors[f] === "" && userData[f] !== ""){
+        setIsFormValid(true)
+      }
+      else if (userErrors[f] !== "") {
+        setIsFormValid(false) // Set isValid to false if any field has an error
+        break;
+      }
+    }
+    // Set the form as valid if isValid is true
+    // setIsFormValid(isValid); // Update the form validity state based on the isValid value
+    // console.log(isValid);
+    console.log(IsFormValid)
+  };
+  
+  useEffect(function(){
+    ValidateForm();
+  },[userErrors])
+  
+  const onFormSubmit = () => {
+    if(IsFormValid){
+      console.log(userData)
+    }
+    else {
+      alert("invalid")
+    }
+  }
+
+  // function registerUser() {}
 
   return (
     <>
@@ -177,19 +209,19 @@ function Register() {
             <TextField //EMAIL
               value={userData.email}
               sx={{ width: "300px" }}
-              id="outlined-basic"
+              id="email"
               label='דוא"ל'
               variant="outlined"
               error={!!userErrors.email} // Converts string to boolean
               helperText={userErrors.email}
-              onChange={(event) => handleEmailChange(event, "email")}
-              onFocus={(event) => handleEmailChange(event, "email")}
-              onBlur={(event) => validateInput(event.target.value, "email")}
+              onChange={(event) => handleInputChange(event, "email")}
+              // onFocus={(event) => handleInputChange(event, "email")}
+              // onBlur={(event) => validateInput(event, "email")}
             />
 
             {/* BIRTHDAY CALENDAR */}
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker sx={{ width: "300px" }} />
+              <DatePicker sx={{ width: "300px" }} onChange={(newValue) => console.log(newValue)} />
             </LocalizationProvider>
 
             {/* CITY */}
@@ -197,14 +229,14 @@ function Register() {
               sx={{ width: "300px" }}
               disablePortal
               id="combo-box"
-              options={["א", "ב"]}
+              options={["חדרה", "נתניה", "תל אביב", "חיפה", "עמק חפר"]}
               renderInput={(params) => <TextField {...params} label="עיר" />}
             />
 
             <TextField //STREET
               value={userData.street}
               sx={{ width: "300px" }}
-              id="outlined-basic"
+              id="street"
               label="רחוב"
               variant="outlined"
               error={!!userErrors.street}
@@ -218,7 +250,7 @@ function Register() {
               error={!!userErrors.houseNumber} // Converts string to boolean
               helperText={userErrors.houseNumber}
               sx={{ width: "300px" }}
-              id="outlined-basic"
+              id="house-num"
               label="מספר בית"
               variant="outlined"
             />
@@ -235,7 +267,7 @@ function Register() {
             <TextField //USERNAME
               value={userData.userName}
               sx={{ width: "300px" }}
-              id="outlined-basic"
+              id="username"
               label="שם משתמש"
               variant="outlined"
               maxLength={60}
@@ -250,6 +282,10 @@ function Register() {
               label="הזן סיסמא"
               type="password"
               autoComplete="current-password"
+              error={!!userErrors.password}
+              helperText={userErrors.password}
+              onChange={(event) => handleInputChange(event, "password")}
+
             />
 
             <TextField //SECOND PASSWORD              NEED TO HANDLE PASSWORD
@@ -258,6 +294,9 @@ function Register() {
               label="הזן סיסמה בשנית"
               type="password"
               autoComplete="current-password"
+              error={!!userErrors.password}
+              helperText={userErrors.password}
+              onChange={(event) => handleInputChange(event, "password")}
             />
 
             <Button
@@ -273,7 +312,7 @@ function Register() {
             <TextField //FIRST NAME
               value={userData.firstName}
               sx={{ width: "300px" }}
-              id="outlined-basic"
+              id="first-name"
               label="שם פרטי"
               variant="outlined"
               error={!!userErrors.firstName}
@@ -284,7 +323,7 @@ function Register() {
             <TextField //LAST NAME
               value={userData.lastName}
               sx={{ width: "300px" }}
-              id="outlined-basic"
+              id="last-name"
               label="שם משפחה"
               variant="outlined"
               error={!!userErrors.lastName}
@@ -293,7 +332,7 @@ function Register() {
             />
           </Box>
         </Box>
-        <Button sx={{ width: "200px", margin: "20px" }} variant="contained">
+        <Button sx={{ width: "200px", margin: "20px" }} variant="contained" onClick={onFormSubmit}>
           הרשם
         </Button>
       </div>
