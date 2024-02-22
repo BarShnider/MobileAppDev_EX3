@@ -1,0 +1,5 @@
+1. fix the calendar
+2. fix the img
+3. connect the button
+4. the inputs are in the left, move them to right (CSS)
+** i installed =  npm install @mui/x-date-pickers @mui/x-pickers @date-io/dayjs@1.x

@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Button } from "@mui/material";
+import { Autocomplete, Box, Button, useEventCallback } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -6,6 +6,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useEffect, useState } from "react";
+import dayjs from "dayjs";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -46,7 +47,6 @@ function Register() {
     password: "",
     passwordValidate: "",
     birthDay: "",
-    city: "",
     houseNumber: "",
     street: "",
     firstName: "",
@@ -56,10 +56,12 @@ function Register() {
   const [IsFormValid, setIsFormValid] = useState(false);
 
   const regexPatternNumbers = /^[1-9]\d*$/; // any positive number except 0
-  const regexPatternPassword = /^(?=.*[!@#$%^&*()_+{}|:"<>?])(?=.*[A-Z])(?=.*\d).{7,12}$/;
-    const regexPatternUserName = /^[a-zA-Z0-9\u00C0-\u00FF!@#$%^&*()_+{}|:"<>?]{1,60}$/ // limited to length 60 
-  const regexPatternString = /^[a-zA-Z\u00C0-\u00FF]+$/;
-  const regexPatternStreet = /^[\u0590-\u05FF]+$/;
+  const regexPatternPassword =
+    /^(?=.*[!@#$%^&*()_+{}|:"<>?])(?=.*[A-Z])(?=.*\d).{7,12}$/;
+  const regexPatternUserName =
+    /^[a-zA-Z0-9\u00C0-\u00FF!@#$%^&*()_+{}|:"<>?]{1,60}$/; // limited to length 60
+  //const regexPatternString = /^[a-zA-Z\u00C0-\u00FF]+$/;
+  const regexPatternHebrew = /^[\u0590-\u05FF]+$/;
   const regexPatternEmail = /^[a-zA-Z@]+\.com$/;
 
   const handleInputChange = (event, field) => {
@@ -69,7 +71,6 @@ function Register() {
   };
 
   const validateInput = (value, fieldError) => {
-    //to do switch case !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! for all erros.
     switch (fieldError) {
       case "password":
         if (regexPatternPassword.test(value) || value === "") {
@@ -77,7 +78,8 @@ function Register() {
         } else {
           setUserErrors({
             ...userErrors,
-            [fieldError]: "הסיסמה חייבת להכין בין 7 ל- 12 תווים. יש לוודא שיש לפחות תו אחד מיוחד, אות גדולה ומספר",
+            [fieldError]:
+              "הסיסמה חייבת להכין בין 7 ל- 12 תווים. יש לוודא שיש לפחות תו אחד מיוחד, אות גדולה ומספר",
           });
         }
         break;
@@ -93,22 +95,22 @@ function Register() {
         }
         break;
       case "firstName":
-        if (!regexPatternString.test(value) || value === "") {
+        if (regexPatternHebrew.test(value) || value === "") {
           setUserErrors({ ...userErrors, [fieldError]: "" });
         } else {
           setUserErrors({
             ...userErrors,
-            [fieldError]: "ניתן למלא טקסט בלבד",
+            [fieldError]: "ניתן למלא טקסט בעברית בלבד",
           });
         }
         break;
       case "lastName":
-        if (regexPatternString.test(value) || value === "") {
+        if (regexPatternHebrew.test(value) || value === "") {
           setUserErrors({ ...userErrors, [fieldError]: "" });
         } else {
           setUserErrors({
             ...userErrors,
-            [fieldError]: "ניתן למלא טקסט בלבד",
+            [fieldError]: "ניתן למלא טקסט בעברית בלבד",
           });
         }
         break;
@@ -118,66 +120,137 @@ function Register() {
         } else {
           setUserErrors({
             ...userErrors,
-            [fieldError]: "Input must contain only positive numbers",
+            [fieldError]: "ניתן להזין רק מספרים",
           });
         }
         break;
       case "street":
-        if (regexPatternStreet.test(value) || value === "") {
+        if (regexPatternHebrew.test(value) || value === "") {
           setUserErrors({ ...userErrors, [fieldError]: "" });
         } else {
           setUserErrors({
             ...userErrors,
-            [fieldError]: "Input must contain only letters in Hebrew",
-          });
-        }
-        break;
-      case "email":
-        if (regexPatternEmail.test(value) || value === "") {
-          setUserErrors({ ...userErrors, [fieldError]: "" });
-        } else {
-          setUserErrors({
-            ...userErrors,
-            [fieldError]: "ניתן להזין אותיות לועזיות בלבד ותווים מיוחדים, התו @ מופיע פעם אחת בלבד, בסוף הטקסט יש .com בלבד",
+            [fieldError]: "ניתן למלא טקסט בעברית בלבד",
           });
         }
         break;
     }
   };
 
-  // const handleEmailChange = (event) => {
-  //   setUserData({ ...userData, ["email"]: event.target.value });
-  // };
-
   const ValidateForm = () => {
     setIsFormValid(false); // Assume the form is invalid initially
     for (let f in userErrors) {
-      if (userErrors[f] === "" && userData[f] !== ""){
-        setIsFormValid(true)
-      }
-      else if (userErrors[f] !== "") {
-        setIsFormValid(false) // Set isValid to false if any field has an error
+      if (userErrors[f] === "" && userData[f] !== "") {
+        setIsFormValid(true);
+      } else if (userErrors[f] !== "") {
+        setIsFormValid(false); // Set isValid to false if any field has an error
         break;
       }
     }
     // Set the form as valid if isValid is true
     // setIsFormValid(isValid); // Update the form validity state based on the isValid value
     // console.log(isValid);
-    console.log(IsFormValid)
+    console.log(IsFormValid);
   };
-  
-  useEffect(function(){
-    ValidateForm();
-  },[userErrors])
-  
+
+  // const handleDateChange = (newValue) => {
+  //   const selectedDate = dayjs(newValue);
+  //   const currentDate = dayjs();
+  //   const age = currentDate.diff(selectedDate, "year");
+  //   if (age <= 120 && age >= 18) {
+  //     setUserErrors({
+  //       ...userErrors,
+  //       birthDay: "",
+  //     });
+  //     setUserData({ ...userData, birthDay: selectedDate.format("YYYY-MM-DD") });
+  //   } else {
+  //     console.log(age);
+  //     setUserErrors({
+  //       ...userErrors,
+  //       birthDay:
+  //         "תאריך לא תקין, נא לוודא שהפרטים נכונים והינך מעל 18 (ומתחת ל-120)",
+  //     });
+  //     setUserData({ ...userData, birthDay: "" });
+  //   }
+  //   console.log("Age:", age);
+  // };
+  const handleDateChange = (newValue) => {
+    const selectedDate = dayjs(newValue);
+    const currentDate = dayjs();
+    const age = currentDate.diff(selectedDate, "year");
+    if (age <= 120 && age >= 18) {
+      setUserErrors({
+        ...userErrors,
+        birthDay: "",
+      });
+      setUserData({ ...userData, birthDay: selectedDate.format("YYYY-MM-DD") });
+    } else {
+      setUserErrors({
+        ...userErrors,
+        birthDay:
+          "תאריך לא תקין, יש לוודא שהפרטים נכונים והינך מעל 18 (ומתחת ל-120)",
+      });
+      setUserData({ ...userData, birthDay: "" });
+    }
+  };
+
+  const handleSecondPass = (secondPass) => {
+    //checking if the second password equals to the first
+    console.log(secondPass);
+    console.log(userData.password);
+    if (secondPass === "") {
+      setUserErrors({
+        ...userErrors,
+        passwordValidate: "",
+      });
+    } else {
+      if (secondPass !== userData.password) {
+        setUserErrors({
+          ...userErrors,
+          passwordValidate: "הסיסמאות אינן זהות",
+        });
+      } else {
+        setUserErrors({
+          ...userErrors,
+          passwordValidate: "",
+        });
+      }
+    }
+  };
+  const handleEmail = (email) => {
+    console.log(email);
+    if (email === "") {
+      setUserErrors({
+        ...userErrors,
+        email: "",
+      });
+    } else {
+      if (regexPatternEmail.test(email) || email === "") {
+        setUserErrors({ ...userErrors, email: "" });
+      } else {
+        setUserErrors({
+          ...userErrors,
+          email:
+            "הסיסמה חייבת להכין בין 7 ל- 12 תווים. יש לוודא שיש לפחות תו אחד מיוחד, אות גדולה ומספר",
+        });
+      }
+    }
+  };
+
+  useEffect(
+    function () {
+      ValidateForm();
+    },
+    [userErrors]
+  );
+
   const onFormSubmit = () => {
-    if(IsFormValid){
-      console.log(userData)
+    if (IsFormValid) {
+      console.log(userData);
+    } else {
+      alert("invalid");
     }
-    else {
-      alert("invalid")
-    }
-  }
+  };
 
   // function registerUser() {}
 
@@ -214,14 +287,24 @@ function Register() {
               variant="outlined"
               error={!!userErrors.email} // Converts string to boolean
               helperText={userErrors.email}
-              onChange={(event) => handleInputChange(event, "email")}
-              // onFocus={(event) => handleInputChange(event, "email")}
-              // onBlur={(event) => validateInput(event, "email")}
+              onChange={(event) => {
+                setUserData({ ...userData, email: event.target.value });
+              }}
+              onBlur={(event) => handleEmail(event.target.value)}
             />
-
             {/* BIRTHDAY CALENDAR */}
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker sx={{ width: "300px" }} onChange={(newValue) => console.log(newValue)} />
+              <DatePicker
+                sx={{ width: "100%" }}
+                variant="outlined"
+                label="בחירת תאריך"
+                onChange={(newValue) => handleDateChange(newValue)}
+                // error={!!userErrors.birthDay}
+                // helperText={userErrors.birthDay}
+                minDate={dayjs().subtract(120, "year")} // Set minimum date 120 years ago
+                maxDate={dayjs().subtract(18, "year")} // Set maximum date 18 years ago
+                disableTextInput
+              />
             </LocalizationProvider>
 
             {/* CITY */}
@@ -231,8 +314,14 @@ function Register() {
               id="combo-box"
               options={["חדרה", "נתניה", "תל אביב", "חיפה", "עמק חפר"]}
               renderInput={(params) => <TextField {...params} label="עיר" />}
+              onChange={(event, value) => {
+                if (value === null) {
+                  setUserData({ ...userData, city: "" });
+                } else {
+                  setUserData({ ...userData, city: value });
+                }
+              }}
             />
-
             <TextField //STREET
               value={userData.street}
               sx={{ width: "300px" }}
@@ -243,7 +332,6 @@ function Register() {
               helperText={userErrors.street}
               onChange={(event) => handleInputChange(event, "street")}
             />
-
             <TextField //HOUSE NUMBER
               value={userData.houseNumber}
               onChange={(event) => handleInputChange(event, "houseNumber")}
@@ -276,7 +364,7 @@ function Register() {
               onChange={(event) => handleInputChange(event, "userName")}
             />
 
-            <TextField //PASSWORD               NEED TO HNADLE PASSWORD
+            <TextField //PASSWORD
               sx={{ width: "300px" }}
               id="password-input"
               label="הזן סיסמא"
@@ -285,18 +373,18 @@ function Register() {
               error={!!userErrors.password}
               helperText={userErrors.password}
               onChange={(event) => handleInputChange(event, "password")}
-
             />
 
-            <TextField //SECOND PASSWORD              NEED TO HANDLE PASSWORD
+            <TextField //SECOND PASSWORD
               sx={{ width: "300px" }}
               id="password-validate-input"
               label="הזן סיסמה בשנית"
               type="password"
               autoComplete="current-password"
-              error={!!userErrors.password}
-              helperText={userErrors.password}
-              onChange={(event) => handleInputChange(event, "password")}
+              error={!!userErrors.passwordValidate}
+              helperText={userErrors.passwordValidate}
+              onChange={(event) => handleInputChange(event, "passwordValidate")}
+              onBlur={(event) => handleSecondPass(event.target.value)}
             />
 
             <Button
@@ -332,7 +420,11 @@ function Register() {
             />
           </Box>
         </Box>
-        <Button sx={{ width: "200px", margin: "20px" }} variant="contained" onClick={onFormSubmit}>
+        <Button
+          sx={{ width: "200px", margin: "20px" }}
+          variant="contained"
+          onClick={onFormSubmit}
+        >
           הרשם
         </Button>
       </div>
