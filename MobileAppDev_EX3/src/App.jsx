@@ -6,42 +6,45 @@ import EditDetails from "./Components/EditDetails";
 
 // https://colorhunt.co/palette/c4dfdfd2e9e9e3f4f4f8f6f4
 function App() {
-  const [users, setUsers] = useState([]); // connect to use effect
+  const [users, setUsers] = useState([]);
 
-  useEffect(
-    function () {
-      console.log("SET");
-      localStorage.setItem(
-        "users",
-        JSON.stringify([{ name: "avi" }, { name: "ben" }])
-      );
-    },
-    [users]
-  );
+  // useEffect(() => {
+  //   console.log("SET");
+  //   // Setting initial users in localStorage with a key "users"
+  //   localStorage.setItem(
+  //     "users",
+  //     JSON.stringify([
+  //       {
+  //         userName: "yoni",
+  //         password: "!Zxc123",
+  //         birthDay: "08/09/1997",
+  //         email: "y@gmail.com",
+  //         city: "נתניה",
+  //         houseNumber: "40",
+  //         street: "ויצמן",
+  //         firstName: "יוני",
+  //         lastName: "בנינו",
+  //       },
+  //     ])
+  //   );
+  // }, []);
 
-  //useEffect that will work every time the apps opens and will check if there users in the database.
-  function loadUsers() {
-    useEffect(() => {
-      const storedData = localStorage.getItem("users"); //convert into json
-      if (
-        storedData !== null &&
-        storedData !== undefined &&
-        storedData.length > 0
-      ) {
-        () => setUsers(storedData);
-        console.log(storedData);
-      } else {
-        console.log("NO");
-      }
-    }, []);
-  }
+  // Load users from localStorage when the component mounts
+  useEffect(() => {
+    const storedData = localStorage.getItem("users");
+    if (storedData) {
+      setUsers(JSON.parse(storedData));
+      console.log("Users loaded:", JSON.parse(storedData));
+    } else {
+      console.log("No users found in localStorage.");
+    }
+  }, []);
 
   return (
     <>
-      {loadUsers()}
-      <Register addNewUser={setUsers} />
-      <Login />
-      <Profile />
+      <Register addNewUser={setUsers} usersFromStorage={users} />
+      <Login users={users} />
+      <Profile users={users} />
     </>
   );
 }

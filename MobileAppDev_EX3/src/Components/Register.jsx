@@ -5,7 +5,7 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import dayjs from "dayjs";
 
 const VisuallyHiddenInput = styled("input")({
@@ -20,26 +20,19 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-function Register() {
-  // const [userName, setUserName] = useState("");
-  // const [email, setEmail] = useState("");
-  // const [birthDay, setBirthDay] = useState("");
-  // const [city, setCity] = useState("");
-  // const [houseNumber, setHouseNumber] = useState("");
-  // const [street, setStreet] = useState("");
-  // const [firstName, setFirstName] = useState("");
-  // const [lastName, setLastName] = useState("");
+function Register({ addNewUser, usersFromStorage }) {
   const [userData, setUserData] = useState({
-    userName: "",
-    email: "",
-    password: "",
-    passwordValidate: "",
-    birthDay: "",
-    city: "",
-    houseNumber: "",
-    street: "",
-    firstName: "",
-    lastName: "",
+    userName: "y",
+    email: "y@gmail.com",
+    password: "!Zxc123",
+    passwordValidate: "!Zxc123",
+    birthDay: "08/09/1997",
+    city: null,
+    houseNumber: "3",
+    street: "ג",
+    firstName: "ג",
+    lastName: "ג",
+    img: null,
   });
   const [userErrors, setUserErrors] = useState({
     userName: "",
@@ -51,19 +44,99 @@ function Register() {
     street: "",
     firstName: "",
     lastName: "",
+    img: "",
   });
-
-  const [IsFormValid, setIsFormValid] = useState(false);
 
   const regexPatternNumbers = /^[1-9]\d*$/; // any positive number except 0
   const regexPatternPassword =
     /^(?=.*[!@#$%^&*()_+{}|:"<>?])(?=.*[A-Z])(?=.*\d).{7,12}$/;
   const regexPatternUserName =
     /^[a-zA-Z0-9\u00C0-\u00FF!@#$%^&*()_+{}|:"<>?]{1,60}$/; // limited to length 60
-  //const regexPatternString = /^[a-zA-Z\u00C0-\u00FF]+$/;
   const regexPatternHebrew = /^[\u0590-\u05FF]+$/;
   const regexPatternEmail = /^[a-zA-Z@]+\.com$/;
 
+  const cityOptions = [
+    "חדרה",
+    "נתניה",
+    "תל אביב",
+    "חיפה",
+    "עמק חפר",
+    "ירושלים",
+    "באר שבע",
+    "ראשון לציון",
+    "פתח תקווה",
+    "אשדוד",
+    "נצרת",
+    "אילת",
+    "קריית מוצקין",
+    "נהריה",
+    "בית שמש",
+    "רמת גן",
+    "רחובות",
+    "בת ים",
+    "הרצליה",
+    "קריית אתא",
+    "טבריה",
+    "הוד השרון",
+    "חולון",
+    "נס ציונה",
+    "לוד",
+    "רמת השרון",
+    "כפר סבא",
+    "רמלה",
+    "עפולה",
+    "זכרון יעקב",
+    "קריית גת",
+    "גבעתיים",
+    "אופקים",
+    "דימונה",
+    "טייבה",
+    "קריית שמונה",
+    "כרמיאל",
+    "עכו",
+    "מודיעין מכבים רעות",
+    "יבנה",
+    "קריית ים",
+    "מודיעין עילית",
+    "אלעד",
+    "ביתר עילית",
+    "ערד",
+    "מגדל העמק",
+    "קריית ביאליק",
+    "ראש העין",
+    "בית שאן",
+    "תושיה",
+    "אבן יהודה",
+    "כפר יונה",
+    "כפר קאסם",
+    "רמת ישי",
+    "בנימינה",
+    "גן יבנה",
+    "גבעת שמואל",
+    "קדימה-צורן",
+    "זרזיר",
+    "כפר יאסיף",
+    "סח'נין",
+    "פרדס חנה-כרכור",
+    "כפר גנים",
+    "יקנעם עילית",
+    "נשר",
+    "אור יהודה",
+    "נווה אור",
+    "באקה אל-גרביה",
+    "כפר יובל",
+    "אור עקיבא",
+    "כפר מנדא",
+    "ראש פינה",
+    "אום אל-פחם",
+    "טירה",
+    "כפר קרע",
+    "מגאר",
+    "מזרע",
+    "כפר מצר",
+  ];
+
+  // checks if inputs are vaid
   const handleInputChange = (event, field) => {
     const input = event.target.value;
     validateInput(input, field);
@@ -85,7 +158,21 @@ function Register() {
         break;
       case "userName":
         if (regexPatternUserName.test(value) || value === "") {
-          setUserErrors({ ...userErrors, [fieldError]: "" });
+          let flag = true;
+          for (let user of usersFromStorage) {
+            if (user.userName === value) {
+              console.log(user.userName);
+              setUserErrors({
+                ...userErrors,
+                [fieldError]: "משתמש כבר קיים",
+              });
+              flag = false;
+              break;
+            }
+          }
+          if (flag) {
+            setUserErrors({ ...userErrors, [fieldError]: "" });
+          }
         } else {
           setUserErrors({
             ...userErrors,
@@ -94,6 +181,7 @@ function Register() {
           });
         }
         break;
+
       case "firstName":
         if (regexPatternHebrew.test(value) || value === "") {
           setUserErrors({ ...userErrors, [fieldError]: "" });
@@ -137,43 +225,74 @@ function Register() {
     }
   };
 
-  const ValidateForm = () => {
-    setIsFormValid(false); // Assume the form is invalid initially
-    for (let f in userErrors) {
-      if (userErrors[f] === "" && userData[f] !== "") {
-        setIsFormValid(true);
-      } else if (userErrors[f] !== "") {
-        setIsFormValid(false); // Set isValid to false if any field has an error
-        break;
+  const validateForm = () => {
+    let flag = true;
+    const requiredFields = [
+      "userName",
+      "email",
+      "password",
+      "passwordValidate",
+      "birthDay",
+      "city",
+      "houseNumber",
+      "street",
+      "firstName",
+      "lastName",
+    ];
+    for (let key of requiredFields) {
+      if (!userData[key]) {
+        flag = false;
+        setUserErrors((prevErrors) => ({
+          ...prevErrors,
+          [key]: "שדה חובה",
+        }));
+      } else if (
+        (key === "email" || key === "userName") &&
+        userErrors[key] !== ""
+      ) {
+        flag = false;
       }
     }
-    // Set the form as valid if isValid is true
-    // setIsFormValid(isValid); // Update the form validity state based on the isValid value
-    // console.log(isValid);
-    console.log(IsFormValid);
+
+    if (flag) {
+      // eslint-disable-next-line no-unused-vars
+      const { passwordValidate, ...userWithoutPasswordValidate } = userData;
+      const newUser = { ...userWithoutPasswordValidate };
+      addNewUser(newUser);
+      localStorage.setItem(
+        "users",
+        JSON.stringify([...usersFromStorage, newUser])
+      );
+      // restart all states
+      setUserData({
+        userName: "",
+        email: "",
+        password: "",
+        passwordValidate: "",
+        birthDay: "",
+        city: null,
+        houseNumber: "",
+        street: "",
+        firstName: "",
+        lastName: "",
+        img: null,
+      });
+      setUserErrors({
+        userName: "",
+        email: "",
+        password: "",
+        passwordValidate: "",
+        birthDay: "",
+        city: "",
+        houseNumber: "",
+        street: "",
+        firstName: "",
+        lastName: "",
+        img: "",
+      });
+    }
   };
 
-  // const handleDateChange = (newValue) => {
-  //   const selectedDate = dayjs(newValue);
-  //   const currentDate = dayjs();
-  //   const age = currentDate.diff(selectedDate, "year");
-  //   if (age <= 120 && age >= 18) {
-  //     setUserErrors({
-  //       ...userErrors,
-  //       birthDay: "",
-  //     });
-  //     setUserData({ ...userData, birthDay: selectedDate.format("YYYY-MM-DD") });
-  //   } else {
-  //     console.log(age);
-  //     setUserErrors({
-  //       ...userErrors,
-  //       birthDay:
-  //         "תאריך לא תקין, נא לוודא שהפרטים נכונים והינך מעל 18 (ומתחת ל-120)",
-  //     });
-  //     setUserData({ ...userData, birthDay: "" });
-  //   }
-  //   console.log("Age:", age);
-  // };
   const handleDateChange = (newValue) => {
     const selectedDate = dayjs(newValue);
     const currentDate = dayjs();
@@ -181,7 +300,7 @@ function Register() {
     if (age <= 120 && age >= 18) {
       setUserErrors({
         ...userErrors,
-        birthDay: "",
+        birthDay: "", // No error, so set it to empty string
       });
       setUserData({ ...userData, birthDay: selectedDate.format("YYYY-MM-DD") });
     } else {
@@ -217,42 +336,44 @@ function Register() {
       }
     }
   };
+
   const handleEmail = (email) => {
-    console.log(email);
+    // handles with email
     if (email === "") {
       setUserErrors({
         ...userErrors,
         email: "",
       });
     } else {
-      if (regexPatternEmail.test(email) || email === "") {
-        setUserErrors({ ...userErrors, email: "" });
+      if (regexPatternEmail.test(email)) {
+        let flag = false;
+        for (let user of usersFromStorage) {
+          if (user.email === email) {
+            flag = true;
+            break;
+          }
+        }
+        if (flag) {
+          setUserErrors({
+            ...userErrors,
+            email: `כתובת המייל כבר תפוסה`, // Email is already in use
+          });
+        } else {
+          setUserErrors({ ...userErrors, email: "" });
+        }
       } else {
         setUserErrors({
           ...userErrors,
-          email:
-            "הסיסמה חייבת להכין בין 7 ל- 12 תווים. יש לוודא שיש לפחות תו אחד מיוחד, אות גדולה ומספר",
+          email: `כתובת המייל צריכה להיות בפורמט example@example.com`, // Invalid email format
         });
       }
     }
   };
 
-  useEffect(
-    function () {
-      ValidateForm();
-    },
-    [userErrors]
-  );
-
-  const onFormSubmit = () => {
-    if (IsFormValid) {
-      console.log(userData);
-    } else {
-      alert("invalid");
-    }
+  const handleCity = (selectedCity) => {
+    setUserData({ ...userData, city: selectedCity });
+    setUserErrors({ ...userErrors, city: "" });
   };
-
-  // function registerUser() {}
 
   return (
     <>
@@ -285,25 +406,26 @@ function Register() {
               id="email"
               label='דוא"ל'
               variant="outlined"
-              error={!!userErrors.email} // Converts string to boolean
+              error={!!userErrors.email}
               helperText={userErrors.email}
               onChange={(event) => {
                 setUserData({ ...userData, email: event.target.value });
               }}
               onBlur={(event) => handleEmail(event.target.value)}
             />
+
             {/* BIRTHDAY CALENDAR */}
+            {/*NEED TO FIX CALENDAR ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR */}
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 sx={{ width: "100%" }}
                 variant="outlined"
-                label="בחירת תאריך"
                 onChange={(newValue) => handleDateChange(newValue)}
-                // error={!!userErrors.birthDay}
-                // helperText={userErrors.birthDay}
-                minDate={dayjs().subtract(120, "year")} // Set minimum date 120 years ago
-                maxDate={dayjs().subtract(18, "year")} // Set maximum date 18 years ago
-                disableTextInput
+                label="בחירת תאריך"
+                error={!!userErrors.birthDay}
+                helperText={userErrors.birthDay}
+                minDate={dayjs().subtract(120, "year")}
+                maxDate={dayjs().subtract(18, "year")}
               />
             </LocalizationProvider>
 
@@ -312,16 +434,19 @@ function Register() {
               sx={{ width: "300px" }}
               disablePortal
               id="combo-box"
-              options={["חדרה", "נתניה", "תל אביב", "חיפה", "עמק חפר"]}
-              renderInput={(params) => <TextField {...params} label="עיר" />}
-              onChange={(event, value) => {
-                if (value === null) {
-                  setUserData({ ...userData, city: "" });
-                } else {
-                  setUserData({ ...userData, city: value });
-                }
-              }}
+              options={cityOptions}
+              value={userData.city || null}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="עיר"
+                  error={!!userErrors.city}
+                  helperText={userErrors.city}
+                />
+              )}
+              onChange={(event, newValue) => handleCity(newValue)}
             />
+
             <TextField //STREET
               value={userData.street}
               sx={{ width: "300px" }}
@@ -332,6 +457,7 @@ function Register() {
               helperText={userErrors.street}
               onChange={(event) => handleInputChange(event, "street")}
             />
+
             <TextField //HOUSE NUMBER
               value={userData.houseNumber}
               onChange={(event) => handleInputChange(event, "houseNumber")}
@@ -369,6 +495,7 @@ function Register() {
               id="password-input"
               label="הזן סיסמא"
               type="password"
+              value={userData.password ? userData.password : ""}
               autoComplete="current-password"
               error={!!userErrors.password}
               helperText={userErrors.password}
@@ -381,13 +508,14 @@ function Register() {
               label="הזן סיסמה בשנית"
               type="password"
               autoComplete="current-password"
+              value={userData.password ? userData.passwordValidate : ""}
               error={!!userErrors.passwordValidate}
               helperText={userErrors.passwordValidate}
               onChange={(event) => handleInputChange(event, "passwordValidate")}
               onBlur={(event) => handleSecondPass(event.target.value)}
             />
 
-            <Button
+            <Button // IMG
               sx={{ width: "300px" }}
               component="label"
               variant="contained"
@@ -423,7 +551,7 @@ function Register() {
         <Button
           sx={{ width: "200px", margin: "20px" }}
           variant="contained"
-          onClick={onFormSubmit}
+          onClick={() => validateForm()}
         >
           הרשם
         </Button>

@@ -1,8 +1,7 @@
-
 body {
   margin: 0;
   padding: 0;
-  background-color: #E3F4F4;
+  background-color: #e3f4f4;
 }
 .container {
   display: flex;
@@ -31,12 +30,14 @@ body {
   align-items: center;
 }
 
-.profile-text {
+.profile-text,
+.profile-mail,
+.profile-home,
+.profile-birthDay {
   display: flex;
   justify-content: flex-start;
   align-items: center;
   flex-direction: row;
-
 }
 
 .icon {
@@ -46,4 +47,10 @@ body {
 .profile-title {
   white-space: nowrap;
   margin: 0;
+}
+
+.userButtons {
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* Adjust as needed */
 }
