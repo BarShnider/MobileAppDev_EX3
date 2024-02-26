@@ -1,9 +1,8 @@
-import { Autocomplete, Box, Button, TextField } from "@mui/material";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+/* eslint-disable react/prop-types */
+import { Box, Button, TextField } from "@mui/material";
 import { useState } from "react";
 
-function Login({ users }) {
+function Login({ users, setIsConnected, setUserAdmin }) {
   const [userName, setUserName] = useState("");
   const [errorName, setErrorName] = useState("");
 
@@ -30,23 +29,25 @@ function Login({ users }) {
   };
 
   const loginUser = () => {
-    for (let user of users) {
-      if (user.userName === userName) {
-        if (user.password === password) {
-          console.log("User Entered !!!!!!!!!!!!!!");
-          const userData = {
-            userName: userName,
-            password: password,
-          };
-          const jsonData = JSON.stringify(userData);
-          sessionStorage.setItem("userData", jsonData);
-          setErrorName("");
-          break;
+    if (userName === "admin" && password === "ad12343211ad") {
+      setUserAdmin(false);
+    } else {
+      for (let user of users) {
+        if (user.userName === userName) {
+          if (user.password === password) {
+            console.log("User Entered !!!!!!!!!!!!!!");
+            const jsonData = JSON.stringify(user);
+            sessionStorage.setItem("userData", jsonData);
+            setErrorName("");
+            setIsConnected(true);
+            setUserAdmin(true);
+            break;
+          } else {
+            setErrorPassword("סיסמה שגויה");
+          }
         } else {
-          setErrorPassword("סיסמה שגויה");
+          setErrorName("משתמש לא קיים");
         }
-      } else {
-        setErrorName("משתמש לא קיים");
       }
     }
   };

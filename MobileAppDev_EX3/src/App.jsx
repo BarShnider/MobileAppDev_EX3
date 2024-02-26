@@ -3,10 +3,13 @@ import Login from "./Components/Login";
 import Profile from "./Components/Profile";
 import Register from "./Components/Register";
 import EditDetails from "./Components/EditDetails";
+import Admin from "./Components/Admin";
 
 // https://colorhunt.co/palette/c4dfdfd2e9e9e3f4f4f8f6f4
 function App() {
   const [users, setUsers] = useState([]);
+  const [isConnected, setIsConnected] = useState(false);
+  const [adminOrUser, setAdminOrUser] = useState(true);
 
   // useEffect(() => {
   //   console.log("SET");
@@ -42,9 +45,23 @@ function App() {
 
   return (
     <>
-      <Register addNewUser={setUsers} usersFromStorage={users} />
-      <Login users={users} />
-      <Profile users={users} />
+      {/* <Register addNewUser={setUsers} usersFromStorage={users} /> */}
+      <Login
+        users={users}
+        setIsConnected={setIsConnected}
+        setUserAdmin={setAdminOrUser}
+      />
+      {isConnected ? (
+        adminOrUser ? (
+          <Profile users={users} setIsConnected={setIsConnected} />
+        ) : (
+          <Admin users={users} setUsers={setUsers} />
+        )
+      ) : (
+        <div className="connectionProfile">
+          <span>יש להתחבר למערכת</span>
+        </div>
+      )}
     </>
   );
 }

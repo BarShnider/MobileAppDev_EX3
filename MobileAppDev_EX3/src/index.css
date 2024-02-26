@@ -54,3 +54,17 @@ body {
   justify-content: center;
   gap: 10px; /* Adjust as needed */
 }
+
+.connectionProfile {
+  display: flex;
+  justify-content: center; /* Horizontally center */
+  align-items: center; /* Vertically center */
+  margin-top: 15px;
+}
+
+.connectionProfile span {
+  border: 1px solid black; /* Border */
+  border-radius: 5px; /* Border radius */
+  padding: 5px 10px; /* Optional: Add padding around the text */
+  font-size: 30px;
+}

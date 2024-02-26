@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Autocomplete, Box, Button, useEventCallback } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
@@ -5,8 +6,9 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
+import { CssBaseline, ThemeProvider } from "@mui/material";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -156,31 +158,26 @@ function Register({ addNewUser, usersFromStorage }) {
           });
         }
         break;
-      case "userName":
-        if (regexPatternUserName.test(value) || value === "") {
-          let flag = true;
-          for (let user of usersFromStorage) {
-            if (user.userName === value) {
-              console.log(user.userName);
-              setUserErrors({
-                ...userErrors,
-                [fieldError]: "משתמש כבר קיים",
-              });
-              flag = false;
-              break;
-            }
-          }
-          if (flag) {
-            setUserErrors({ ...userErrors, [fieldError]: "" });
-          }
+
+      case "userName": {
+        let errorUserName = ""; // Now safely declared within a block scope
+        if (!regexPatternUserName.test(value)) {
+          errorUserName =
+            "ניתן למלא אותיות לועזיות בלבד, מספרים ותווים מיוחדים, לכל היותר באורך 60 תווים.";
         } else {
-          setUserErrors({
-            ...userErrors,
-            [fieldError]:
-              "ניתן למלא אותיות לועזיות בלבד, מספרים ותווים מיוחדים, לכל היותר באורך 60 תווים.",
-          });
+          const isUserNameTaken = usersFromStorage.some(
+            (user) => user.userName === value
+          );
+          if (isUserNameTaken) {
+            errorUserName = "משתמש כבר קיים";
+          }
         }
+        setUserErrors((prevErrors) => ({
+          ...prevErrors,
+          [fieldError]: errorUserName,
+        }));
         break;
+      }
 
       case "firstName":
         if (regexPatternHebrew.test(value) || value === "") {
@@ -422,6 +419,7 @@ function Register({ addNewUser, usersFromStorage }) {
                 variant="outlined"
                 onChange={(newValue) => handleDateChange(newValue)}
                 label="בחירת תאריך"
+                readOnly
                 error={!!userErrors.birthDay}
                 helperText={userErrors.birthDay}
                 minDate={dayjs().subtract(120, "year")}

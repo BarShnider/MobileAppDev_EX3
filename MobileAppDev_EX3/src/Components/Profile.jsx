@@ -1,30 +1,37 @@
+/* eslint-disable react/prop-types */
 import { Avatar, Box, Button, SvgIcon } from "@mui/material";
 import MailOutlineRoundedIcon from "@mui/icons-material/MailOutlineRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import CakeRoundedIcon from "@mui/icons-material/CakeRounded";
 import { useEffect, useState } from "react";
 
-function Profile({ users }) {
-  const [userData, setUserData] = useState();
+function Profile({ users, setIsConnected }) {
+  const [userData, setUserData] = useState(); // check if needed
 
   useEffect(() => {
     const storedData = sessionStorage.getItem("userData");
     if (storedData) {
       const parsedData = JSON.parse(storedData);
       setUserData(parsedData);
-    }
-
-    for (let user of users) {
-      if (user.userName === userData.userName) {
-        document.querySelector(".profile-title").textContent =
-          user.firstName + " " + user.lastName;
-        document.querySelector(".profile-mail").innerHTML += user.email;
-        let house = user.street + " " + user.houseNumber + ", " + user.city;
-        document.querySelector(".profile-home").innerHTML += house;
-        document.querySelector(".profile-birthDay").innerHTML += user.birthDay;
-      }
+      document.querySelector(".profile-title").textContent =
+        parsedData.firstName + " " + parsedData.lastName;
+      document.querySelector(".profile-mail").innerHTML += parsedData.email;
+      let house =
+        parsedData.street +
+        " " +
+        parsedData.houseNumber +
+        ", " +
+        parsedData.city;
+      document.querySelector(".profile-home").innerHTML += house;
+      document.querySelector(".profile-birthDay").innerHTML +=
+        parsedData.birthDay;
     }
   }, [users]);
+
+  const logOut = () => {
+    sessionStorage.removeItem("userData");
+    setIsConnected(false);
+  };
 
   return (
     <>
@@ -92,10 +99,20 @@ function Profile({ users }) {
             </Box>
           </Box>
           <div className="userButtons">
-            <Button style={{ backgroundColor: "red" }} variant="contained">
+            <Button
+              style={{ backgroundColor: "red" }}
+              variant="contained"
+              onClick={logOut}
+            >
               התנתק
             </Button>
-            <Button variant="contained">למשחק</Button>
+            <a
+              href="https://play.runescape.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button variant="contained">למשחק</Button>
+            </a>
             <Button style={{ backgroundColor: "grey" }} variant="contained">
               עדכון פרטים
             </Button>
