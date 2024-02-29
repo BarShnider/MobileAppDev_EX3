@@ -26,7 +26,7 @@ function Profile({ users, setIsConnected }) {
       document.querySelector(".profile-birthDay").innerHTML +=
         parsedData.birthDay;
     }
-  }, [users]);
+  }, []);
 
   const logOut = () => {
     sessionStorage.removeItem("userData");

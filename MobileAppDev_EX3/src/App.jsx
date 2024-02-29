@@ -45,7 +45,7 @@ function App() {
 
   return (
     <>
-      {/* <Register addNewUser={setUsers} usersFromStorage={users} /> */}
+      <Register addNewUser={setUsers} usersFromStorage={users} />
       <Login
         users={users}
         setIsConnected={setIsConnected}

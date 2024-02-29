@@ -30,6 +30,7 @@ function Login({ users, setIsConnected, setUserAdmin }) {
 
   const loginUser = () => {
     if (userName === "admin" && password === "ad12343211ad") {
+      console.log("DSSDSAFADVDFACVVVS");
       setUserAdmin(false);
     } else {
       for (let user of users) {

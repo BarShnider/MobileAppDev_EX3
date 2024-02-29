@@ -8,7 +8,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import { CssBaseline, ThemeProvider } from "@mui/material";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -24,16 +23,16 @@ const VisuallyHiddenInput = styled("input")({
 
 function Register({ addNewUser, usersFromStorage }) {
   const [userData, setUserData] = useState({
-    userName: "y",
-    email: "y@gmail.com",
-    password: "!Zxc123",
-    passwordValidate: "!Zxc123",
-    birthDay: "08/09/1997",
+    userName: "",
+    email: "",
+    password: "",
+    passwordValidate: "",
+    birthDay: "",
     city: null,
-    houseNumber: "3",
-    street: "ג",
-    firstName: "ג",
-    lastName: "ג",
+    houseNumber: "",
+    street: "",
+    firstName: "",
+    lastName: "",
     img: null,
   });
   const [userErrors, setUserErrors] = useState({
@@ -138,7 +137,7 @@ function Register({ addNewUser, usersFromStorage }) {
     "כפר מצר",
   ];
 
-  // checks if inputs are vaid
+  // checks if inputs are valid
   const handleInputChange = (event, field) => {
     const input = event.target.value;
     validateInput(input, field);
@@ -236,9 +235,10 @@ function Register({ addNewUser, usersFromStorage }) {
       "firstName",
       "lastName",
     ];
+    setUserErrors({});
     for (let key of requiredFields) {
       if (!userData[key]) {
-        flag = false;
+        flag = false; // Set flag to false if a required field is missing
         setUserErrors((prevErrors) => ({
           ...prevErrors,
           [key]: "שדה חובה",
@@ -250,17 +250,15 @@ function Register({ addNewUser, usersFromStorage }) {
         flag = false;
       }
     }
-
     if (flag) {
-      // eslint-disable-next-line no-unused-vars
       const { passwordValidate, ...userWithoutPasswordValidate } = userData;
       const newUser = { ...userWithoutPasswordValidate };
-      addNewUser(newUser);
+      addNewUser((prevUsers) => [...prevUsers, newUser]);
+      const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
       localStorage.setItem(
         "users",
-        JSON.stringify([...usersFromStorage, newUser])
+        JSON.stringify([...existingUsers, newUser])
       );
-      // restart all states
       setUserData({
         userName: "",
         email: "",
@@ -304,7 +302,7 @@ function Register({ addNewUser, usersFromStorage }) {
       setUserErrors({
         ...userErrors,
         birthDay:
-          "תאריך לא תקין, יש לוודא שהפרטים נכונים והינך מעל 18 (ומתחת ל-120)",
+          "תאריך לא תקין, יש לוודא שהפרטים נכונים והינך מעל 18 ",
       });
       setUserData({ ...userData, birthDay: "" });
     }
@@ -312,8 +310,6 @@ function Register({ addNewUser, usersFromStorage }) {
 
   const handleSecondPass = (secondPass) => {
     //checking if the second password equals to the first
-    console.log(secondPass);
-    console.log(userData.password);
     if (secondPass === "") {
       setUserErrors({
         ...userErrors,
@@ -419,9 +415,12 @@ function Register({ addNewUser, usersFromStorage }) {
                 variant="outlined"
                 onChange={(newValue) => handleDateChange(newValue)}
                 label="בחירת תאריך"
-                readOnly
-                error={!!userErrors.birthDay}
-                helperText={userErrors.birthDay}
+                slotProps={{
+                  textField: {
+                    helperText: userErrors.birthDay,
+                    error: !!userErrors.birthDay,
+                  },
+                }}
                 minDate={dayjs().subtract(120, "year")}
                 maxDate={dayjs().subtract(18, "year")}
               />
