@@ -2,13 +2,14 @@
 import { Box, Button, TextField } from "@mui/material";
 import { useState } from "react";
 
-function Login({ users, setIsConnected, setUserAdmin }) {
+function Login({ users, setIsConnected, setUserAdmin, setConnectedUser }) {
   const [userName, setUserName] = useState("");
   const [errorName, setErrorName] = useState("");
 
   const [password, setPassword] = useState("");
   const [errorPassword, setErrorPassword] = useState("");
 
+  
   const regexPatternUserName =
     /^[a-zA-Z0-9\u00C0-\u00FF!@#$%^&*()_+{}|:"<>?]{1,60}$/;
 
@@ -30,7 +31,7 @@ function Login({ users, setIsConnected, setUserAdmin }) {
 
   const loginUser = () => {
     if (userName === "admin" && password === "ad12343211ad") {
-      console.log("DSSDSAFADVDFACVVVS");
+      setIsConnected(true);
       setUserAdmin(false);
     } else {
       for (let user of users) {
@@ -38,10 +39,11 @@ function Login({ users, setIsConnected, setUserAdmin }) {
           if (user.password === password) {
             console.log("User Entered !!!!!!!!!!!!!!");
             const jsonData = JSON.stringify(user);
-            sessionStorage.setItem("userData", jsonData);
+            sessionStorage.setItem("connectedUser", jsonData);
             setErrorName("");
-            setIsConnected(true);
             setUserAdmin(true);
+            setConnectedUser(user)
+            setIsConnected(true);
             break;
           } else {
             setErrorPassword("סיסמה שגויה");

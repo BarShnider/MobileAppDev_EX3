@@ -9,8 +9,10 @@ import Admin from "./Components/Admin";
 function App() {
   const [users, setUsers] = useState([]);
   const [isConnected, setIsConnected] = useState(false);
-  const [adminOrUser, setAdminOrUser] = useState(true);
+  const [adminOrUser, setAdminOrUser] = useState(false);
+  const [connectedUser, setConnectedUser] = useState(null)
 
+  
   // useEffect(() => {
   //   console.log("SET");
   //   // Setting initial users in localStorage with a key "users"
@@ -50,10 +52,11 @@ function App() {
         users={users}
         setIsConnected={setIsConnected}
         setUserAdmin={setAdminOrUser}
+        setConnectedUser={setConnectedUser}
       />
       {isConnected ? (
         adminOrUser ? (
-          <Profile users={users} setIsConnected={setIsConnected} />
+          <Profile user={connectedUser} setIsConnected={setIsConnected} />
         ) : (
           <Admin users={users} setUsers={setUsers} />
         )

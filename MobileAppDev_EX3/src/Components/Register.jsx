@@ -21,6 +21,8 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
+
+
 function Register({ addNewUser, usersFromStorage }) {
   const [userData, setUserData] = useState({
     userName: "",
@@ -137,6 +139,28 @@ function Register({ addNewUser, usersFromStorage }) {
     "כפר מצר",
   ];
 
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    
+    // Validate the image file
+    if (file) {
+      const allowedTypes = ["image/jpeg", "image/jpg"];
+      if (!allowedTypes.includes(file.type)) {
+        setUserErrors({
+          ...userErrors,
+          img: "יש להעלות תמונה בפורמט JPG או JPEG בלבד",
+        });
+      } else {
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          // Set the 'img' field in userData to the Base64 string of the uploaded image
+          setUserData({ ...userData, img: reader.result });
+        };
+        setUserErrors({ ...userErrors, img: "" }); // Clear the image error
+      }
+    }
+  };
   // checks if inputs are valid
   const handleInputChange = (event, field) => {
     const input = event.target.value;
@@ -368,6 +392,8 @@ function Register({ addNewUser, usersFromStorage }) {
     setUserErrors({ ...userErrors, city: "" });
   };
 
+  
+
   return (
     <>
       <h1 className="header">הרשמה</h1>
@@ -519,7 +545,8 @@ function Register({ addNewUser, usersFromStorage }) {
               startIcon={<CloudUploadIcon />} //.       Need TO HANDLE IMG
             >
               העלה תמונה
-              <VisuallyHiddenInput type="file" />
+              <VisuallyHiddenInput type="file" accept="image/jpeg, image/jpg" onChange={handleImageChange} />
+              
             </Button>
 
             <TextField //FIRST NAME

@@ -5,31 +5,33 @@ import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import CakeRoundedIcon from "@mui/icons-material/CakeRounded";
 import { useEffect, useState } from "react";
 
-function Profile({ users, setIsConnected }) {
+function Profile({ user, setIsConnected }) {
   const [userData, setUserData] = useState(); // check if needed
 
   useEffect(() => {
-    const storedData = sessionStorage.getItem("userData");
+    const storedData = sessionStorage.getItem("connectedUser");
     if (storedData) {
       const parsedData = JSON.parse(storedData);
+      console.log(parsedData)
       setUserData(parsedData);
-      document.querySelector(".profile-title").textContent =
-        parsedData.firstName + " " + parsedData.lastName;
-      document.querySelector(".profile-mail").innerHTML += parsedData.email;
-      let house =
-        parsedData.street +
-        " " +
-        parsedData.houseNumber +
-        ", " +
-        parsedData.city;
-      document.querySelector(".profile-home").innerHTML += house;
-      document.querySelector(".profile-birthDay").innerHTML +=
-        parsedData.birthDay;
+      console.log(userData)
+      // document.querySelector(".profile-title").textContent =
+      //   parsedData.firstName + " " + parsedData.lastName;
+      // document.querySelector(".profile-mail").innerHTML += parsedData.email;
+      // let house =
+      //   parsedData.street +
+      //   " " +
+      //   parsedData.houseNumber +
+      //   ", " +
+      //   parsedData.city;
+      // document.querySelector(".profile-home").innerHTML += house;
+      // document.querySelector(".profile-birthDay").innerHTML +=
+      //   parsedData.birthDay;
     }
   }, []);
 
   const logOut = () => {
-    sessionStorage.removeItem("userData");
+    sessionStorage.removeItem("connectedUser");
     setIsConnected(false);
   };
 
@@ -47,6 +49,7 @@ function Profile({ users, setIsConnected }) {
             justifyContent: "center",
             alignItems: "center",
             borderRadius: "15px",
+            margin:"50px 0px",
             boxShadow: "3px 3px 5px #87878729",
             backgroundColor: "#fff",
           }}
@@ -70,15 +73,18 @@ function Profile({ users, setIsConnected }) {
                 direction: "rtl",
               }}
             >
-              <h2 className="profile-title"></h2>
+              <h2 className="profile-title">{user.firstName} {user.lastName} </h2>
               <span className="profile-mail">
                 <SvgIcon className="icon" component={MailOutlineRoundedIcon} />
+                {user.email}
               </span>
               <span className="profile-home">
                 <SvgIcon className="icon" component={HomeRoundedIcon} />
+                {`${user.street} ${user.houseNumber}, ${user.city}`}
               </span>
               <span className="profile-birthDay">
                 <SvgIcon className="icon" component={CakeRoundedIcon} />
+                {user.birthDay}
               </span>
             </Box>
             <Box // IMAGE CONTAINER
@@ -93,8 +99,8 @@ function Profile({ users, setIsConnected }) {
             >
               <Avatar
                 sx={{ width: "150px", height: "150px", fontSize: "70px" }}
-                alt="בר שניידר"
-                src="/static/images/avatar/1.jpg"
+                alt={user.firstName}
+                src={user.img}
               />
             </Box>
           </Box>

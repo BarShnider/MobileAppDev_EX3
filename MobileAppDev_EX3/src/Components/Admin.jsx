@@ -7,7 +7,9 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Button } from "@mui/material";
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import EditIcon from '@mui/icons-material/Edit';
+import { Avatar, Button, SvgIcon } from "@mui/material";
 
 export default function Admin({ users, setUsers }) {
   const deleteUser = (mail) => {
@@ -16,6 +18,7 @@ export default function Admin({ users, setUsers }) {
     localStorage.setItem("users", JSON.stringify(updatedUsers));
   };
 
+ 
   return (
     <Box
       sx={{
@@ -23,14 +26,15 @@ export default function Admin({ users, setUsers }) {
         flexDirection: "column",
         gap: "30px",
         border: "1px solid #dedede",
-        padding: "50px",
+        padding: "30px",
+        margin: "50px 100px",
         borderRadius: "15px",
         boxShadow: "3px 3px 5px #87878729",
         backgroundColor: "#fff",
       }}
     >
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <Table sx={{ minWidth: 650, borderRadius:"15px" }} aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell></TableCell>
@@ -38,7 +42,7 @@ export default function Admin({ users, setUsers }) {
               <TableCell>כתובת</TableCell>
               <TableCell>תאריך לידה</TableCell>
               <TableCell>שם מלא</TableCell>
-              <TableCell>שם משתמשת</TableCell>
+              <TableCell>שם משתמש</TableCell>
               <TableCell>תמונה</TableCell>
             </TableRow>
           </TableHead>
@@ -46,8 +50,8 @@ export default function Admin({ users, setUsers }) {
             {users.map((user) => (
               <TableRow key={user.email}>
                 <TableCell>
-                  <Button>עידכון</Button>
-                  <Button onClick={() => deleteUser(user.email)}>מחיקה</Button>
+                  <Button onClick={() => editDetails(user)}><SvgIcon  component={EditIcon} /></Button>
+                  <Button onClick={() => deleteUser(user.email)}><SvgIcon  component={RemoveCircleIcon} /></Button>
                 </TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>
@@ -56,7 +60,11 @@ export default function Admin({ users, setUsers }) {
                 <TableCell>{user.birthDay}</TableCell>
                 <TableCell>{user.firstName + " " + user.lastName}</TableCell>
                 <TableCell>{user.userName}</TableCell>
-                <TableCell>תמונה</TableCell>
+                <TableCell>              <Avatar
+                sx={{ width: "50px", height: "50px", fontSize: "30px" }}
+                alt={user.firstName}
+                src={user.img}
+              /></TableCell>
               </TableRow>
             ))}
           </TableBody>
