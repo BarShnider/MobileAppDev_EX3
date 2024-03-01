@@ -63,7 +63,7 @@ body {
   padding: 20px;
 }
 
-.connectionProfile span {
+.connectionProfile p {
   border-radius: 15px; /* Border radius */
   padding: 20px 30px; /* Optional: Add padding around the text */
   font-size: 24px;

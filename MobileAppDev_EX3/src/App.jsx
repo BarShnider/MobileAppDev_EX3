@@ -3,7 +3,7 @@ import Login from "./Components/Login";
 import Profile from "./Components/Profile";
 import Register from "./Components/Register";
 import EditDetails from "./Components/EditDetails";
-import Admin from "./Components/Admin";
+import SystemAdmin from "./Components/SystemAdmin";
 
 // https://colorhunt.co/palette/c4dfdfd2e9e9e3f4f4f8f6f4
 function App() {
@@ -67,11 +67,11 @@ function App() {
         adminOrUser ? (
           <Profile user={connectedUser} setIsConnected={setIsConnected} setShowEditDetails={setShowEditDetails} setUserToEdit={setUserToEdit} />
         ) : (
-          <Admin users={users} setShowEditDetails={setShowEditDetails} setUserToEdit={setUserToEdit} setUsers={setUsers} />
+          <SystemAdmin users={users} setShowEditDetails={setShowEditDetails} setUserToEdit={setUserToEdit} setUsers={setUsers} />
         )
       ) : (
         <div className="connectionProfile">
-          <span>להמשך יש לבצע התחברות למערכת</span>
+          <p>יש להתחבר למערכת</p>
         </div>
       )}
     {showEditDetails && <EditDetails userToEdit={userToEdit} usersFromStorage={users} setUsers={setUsers}/>}   
