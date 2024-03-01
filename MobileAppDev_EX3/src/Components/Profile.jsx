@@ -5,9 +5,15 @@ import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import CakeRoundedIcon from "@mui/icons-material/CakeRounded";
 import { useEffect, useState } from "react";
 
-function Profile({ user, setIsConnected }) {
+function Profile({ user, setIsConnected, setShowEditDetails, setUserToEdit }) {
   const [userData, setUserData] = useState(); // check if needed
 
+
+  const onEdit = () => {
+    setUserToEdit(user)
+    setShowEditDetails((state) => !state);
+
+  }
   useEffect(() => {
     const storedData = sessionStorage.getItem("connectedUser");
     if (storedData) {
@@ -119,7 +125,7 @@ function Profile({ user, setIsConnected }) {
             >
               <Button variant="contained">למשחק</Button>
             </a>
-            <Button style={{ backgroundColor: "grey" }} variant="contained">
+            <Button onClick={() => onEdit()} style={{ backgroundColor: "grey" }} variant="contained">
               עדכון פרטים
             </Button>
           </div>

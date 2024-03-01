@@ -60,11 +60,13 @@ body {
   justify-content: center; /* Horizontally center */
   align-items: center; /* Vertically center */
   margin-top: 15px;
+  padding: 20px;
 }
 
 .connectionProfile span {
-  border: 1px solid black; /* Border */
-  border-radius: 5px; /* Border radius */
-  padding: 5px 10px; /* Optional: Add padding around the text */
+  border-radius: 15px; /* Border radius */
+  padding: 20px 30px; /* Optional: Add padding around the text */
   font-size: 30px;
+  background-color: #ffffff;
+  box-shadow: 3px 3px 5px #87878729;
 }

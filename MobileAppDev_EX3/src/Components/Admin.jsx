@@ -60,11 +60,13 @@ export default function Admin({ users, setUsers }) {
                 <TableCell>{user.birthDay}</TableCell>
                 <TableCell>{user.firstName + " " + user.lastName}</TableCell>
                 <TableCell>{user.userName}</TableCell>
-                <TableCell>              <Avatar
+                <TableCell>
+                  <Avatar
                 sx={{ width: "50px", height: "50px", fontSize: "30px" }}
-                alt={user.firstName}
+                alt={user.firstName + " " + user.lastName}
                 src={user.img}
-              /></TableCell>
+              />
+              </TableCell>
               </TableRow>
             ))}
           </TableBody>

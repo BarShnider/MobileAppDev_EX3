@@ -245,7 +245,7 @@ function Register({ addNewUser, usersFromStorage }) {
     }
   };
 
-  const validateForm = () => {
+  const registerUser = () => {
     let flag = true;
     const requiredFields = [
       "userName",
@@ -434,7 +434,6 @@ function Register({ addNewUser, usersFromStorage }) {
             />
 
             {/* BIRTHDAY CALENDAR */}
-            {/*NEED TO FIX CALENDAR ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR */}
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 sx={{ width: "100%" }}
@@ -575,7 +574,7 @@ function Register({ addNewUser, usersFromStorage }) {
         <Button
           sx={{ width: "200px", margin: "20px" }}
           variant="contained"
-          onClick={() => validateForm()}
+          onClick={() => registerUser()}
         >
           הרשם
         </Button>

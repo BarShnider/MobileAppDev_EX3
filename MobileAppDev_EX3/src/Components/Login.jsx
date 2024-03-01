@@ -9,7 +9,6 @@ function Login({ users, setIsConnected, setUserAdmin, setConnectedUser }) {
   const [password, setPassword] = useState("");
   const [errorPassword, setErrorPassword] = useState("");
 
-  
   const regexPatternUserName =
     /^[a-zA-Z0-9\u00C0-\u00FF!@#$%^&*()_+{}|:"<>?]{1,60}$/;
 
@@ -42,7 +41,7 @@ function Login({ users, setIsConnected, setUserAdmin, setConnectedUser }) {
             sessionStorage.setItem("connectedUser", jsonData);
             setErrorName("");
             setUserAdmin(true);
-            setConnectedUser(user)
+            setConnectedUser(user);
             setIsConnected(true);
             break;
           } else {

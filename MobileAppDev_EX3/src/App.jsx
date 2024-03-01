@@ -7,11 +7,13 @@ import Admin from "./Components/Admin";
 
 // https://colorhunt.co/palette/c4dfdfd2e9e9e3f4f4f8f6f4
 function App() {
+  document.title = "HW3"
   const [users, setUsers] = useState([]);
   const [isConnected, setIsConnected] = useState(false);
   const [adminOrUser, setAdminOrUser] = useState(false);
   const [connectedUser, setConnectedUser] = useState(null)
-
+  const [showEditDetails, setShowEditDetails] = useState(false);
+  const [userToEdit, setUserToEdit] = useState(null);
   
   // useEffect(() => {
   //   console.log("SET");
@@ -36,14 +38,20 @@ function App() {
 
   // Load users from localStorage when the component mounts
   useEffect(() => {
+    loadUsers()
+  }, []);
+
+  const loadUsers = () => {
     const storedData = localStorage.getItem("users");
     if (storedData) {
       setUsers(JSON.parse(storedData));
       console.log("Users loaded:", JSON.parse(storedData));
     } else {
-      console.log("No users found in localStorage.");
+      console.log("No users found in localStorage");
+      setUsers([]);
+
     }
-  }, []);
+  }
 
   return (
     <>
@@ -56,7 +64,7 @@ function App() {
       />
       {isConnected ? (
         adminOrUser ? (
-          <Profile user={connectedUser} setIsConnected={setIsConnected} />
+          <Profile user={connectedUser} setIsConnected={setIsConnected} setShowEditDetails={setShowEditDetails} setUserToEdit={setUserToEdit} />
         ) : (
           <Admin users={users} setUsers={setUsers} />
         )
@@ -65,6 +73,8 @@ function App() {
           <span>יש להתחבר למערכת</span>
         </div>
       )}
+    {showEditDetails && <EditDetails userToEdit={userToEdit} usersFromStorage={users}/>}   {/* TEMP USER!!!! NEED TO CHANGE*/}
+     
     </>
   );
 }
