@@ -11,14 +11,18 @@ import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import EditIcon from '@mui/icons-material/Edit';
 import { Avatar, Button, SvgIcon } from "@mui/material";
 
-export default function Admin({ users, setUsers }) {
+export default function Admin({ users, setUsers, setShowEditDetails, setUserToEdit }) {
   const deleteUser = (mail) => {
     const updatedUsers = users.filter((user) => user.email !== mail);
     setUsers(updatedUsers);
     localStorage.setItem("users", JSON.stringify(updatedUsers));
   };
 
- 
+  const onShowEdit = (user) => {
+    setUserToEdit(user)
+    setShowEditDetails(state => !state)
+  }
+
   return (
     <Box
       sx={{
@@ -26,7 +30,7 @@ export default function Admin({ users, setUsers }) {
         flexDirection: "column",
         gap: "30px",
         border: "1px solid #dedede",
-        padding: "30px",
+        padding: "15px",
         margin: "50px 100px",
         borderRadius: "15px",
         boxShadow: "3px 3px 5px #87878729",
@@ -50,7 +54,7 @@ export default function Admin({ users, setUsers }) {
             {users.map((user) => (
               <TableRow key={user.email}>
                 <TableCell>
-                  <Button onClick={() => editDetails(user)}><SvgIcon  component={EditIcon} /></Button>
+                  <Button onClick={() => onShowEdit(user)}><SvgIcon  component={EditIcon} /></Button>
                   <Button onClick={() => deleteUser(user.email)}><SvgIcon  component={RemoveCircleIcon} /></Button>
                 </TableCell>
                 <TableCell>{user.email}</TableCell>

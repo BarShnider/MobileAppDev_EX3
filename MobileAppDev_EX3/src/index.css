@@ -66,7 +66,10 @@ body {
 .connectionProfile span {
   border-radius: 15px; /* Border radius */
   padding: 20px 30px; /* Optional: Add padding around the text */
-  font-size: 30px;
+  font-size: 24px;
   background-color: #ffffff;
   box-shadow: 3px 3px 5px #87878729;
+  font-family: "heebo";
+  font-weight: 500;
+  color: #1976d2;
 }

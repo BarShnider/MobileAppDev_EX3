@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Autocomplete, Box, Button, TextField } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -18,7 +19,7 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-function EditDetails({userToEdit,usersFromStorage}) {
+function EditDetails({userToEdit,usersFromStorage, setUsers}) {
   console.log(userToEdit)
   const {userName, email, password, passwordValidate, birthDay, city, houseNumber,street,firstName,lastName,img} = userToEdit
   const [userData, setUserData] = useState({
@@ -46,6 +47,71 @@ function EditDetails({userToEdit,usersFromStorage}) {
     lastName: "",
     img: "",
   });
+
+  
+  // const editUser = () => {
+  //   let flag = true;
+  //   const requiredFields = [
+  //     "userName",
+  //     "email",
+  //     "password",
+  //     "passwordValidate",
+  //     "birthDay",
+  //     "city",
+  //     "houseNumber",
+  //     "street",
+  //     "firstName",
+  //     "lastName",
+  //   ];
+  //   setUserErrors({});
+  //   for (let key of requiredFields) {
+  //     if (!userData[key]) {
+  //       flag = false; // Set flag to false if a required field is missing
+  //       setUserErrors((prevErrors) => ({
+  //         ...prevErrors,
+  //         [key]: "שדה חובה",
+  //       }));
+  //     } else if (
+  //       (key === "email" || key === "userName") &&
+  //       userErrors[key] !== ""
+  //     ) {
+  //       flag = false;
+  //     }
+  //   }
+  //   if (flag) {
+  //     // Find the index of the user in the users array
+  //     const userIndex = usersFromStorage.findIndex(
+  //       (user) => user.email === userToEdit.email
+  //     );
+
+  //     // Update the user in the users array
+  //     const updatedUsers = [...usersFromStorage];
+  //     updatedUsers[userIndex] = { ...userData };
+
+  //     // Update localStorage
+  //     localStorage.setItem("users", JSON.stringify(updatedUsers));
+
+  //     // Update the users state
+  //     setUsers(updatedUsers);
+
+  //     // Reset form data and errors
+  //     setUserData({
+  //       userName: "",
+  //       email: "",
+  //       password: "",
+  //       passwordValidate: "",
+  //       birthDay: "",
+  //       city: null,
+  //       houseNumber: "",
+  //       street: "",
+  //       firstName: "",
+  //       lastName: "",
+  //       img: null,
+  //     });
+  //     setUserErrors({});
+  //   }
+  // };
+
 
   const regexPatternNumbers = /^[1-9]\d*$/; // any positive number except 0
   const regexPatternPassword =

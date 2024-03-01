@@ -41,6 +41,7 @@ function App() {
     loadUsers()
   }, []);
 
+
   const loadUsers = () => {
     const storedData = localStorage.getItem("users");
     if (storedData) {
@@ -66,15 +67,14 @@ function App() {
         adminOrUser ? (
           <Profile user={connectedUser} setIsConnected={setIsConnected} setShowEditDetails={setShowEditDetails} setUserToEdit={setUserToEdit} />
         ) : (
-          <Admin users={users} setUsers={setUsers} />
+          <Admin users={users} setShowEditDetails={setShowEditDetails} setUserToEdit={setUserToEdit} setUsers={setUsers} />
         )
       ) : (
         <div className="connectionProfile">
-          <span>יש להתחבר למערכת</span>
+          <span>להמשך יש לבצע התחברות למערכת</span>
         </div>
       )}
-    {showEditDetails && <EditDetails userToEdit={userToEdit} usersFromStorage={users}/>}   {/* TEMP USER!!!! NEED TO CHANGE*/}
-     
+    {showEditDetails && <EditDetails userToEdit={userToEdit} usersFromStorage={users} setUsers={setUsers}/>}   
     </>
   );
 }
