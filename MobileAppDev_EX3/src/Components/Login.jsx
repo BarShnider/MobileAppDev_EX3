@@ -2,7 +2,13 @@
 import { Box, Button, TextField } from "@mui/material";
 import { useState } from "react";
 
-function Login({ users, setIsConnected, setUserAdmin, setConnectedUser }) {
+function Login({
+  users,
+  setIsConnected,
+  setUserAdmin,
+  setConnectedUser,
+  setShowEditDetails,
+}) {
   const [userName, setUserName] = useState("");
   const [errorName, setErrorName] = useState("");
 
@@ -43,6 +49,7 @@ function Login({ users, setIsConnected, setUserAdmin, setConnectedUser }) {
             setUserAdmin(true);
             setConnectedUser(user);
             setIsConnected(true);
+            setShowEditDetails(false);
             break;
           } else {
             setErrorPassword("סיסמה שגויה");

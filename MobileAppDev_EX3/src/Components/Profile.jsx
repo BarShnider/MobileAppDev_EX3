@@ -8,31 +8,15 @@ import { useEffect, useState } from "react";
 function Profile({ user, setIsConnected, setShowEditDetails, setUserToEdit }) {
   const [userData, setUserData] = useState(); // check if needed
 
-
   const onEdit = () => {
-    setUserToEdit(user)
+    setUserToEdit(user);
     setShowEditDetails((state) => !state);
-
-  }
+  };
   useEffect(() => {
     const storedData = sessionStorage.getItem("connectedUser");
     if (storedData) {
       const parsedData = JSON.parse(storedData);
-      console.log(parsedData)
       setUserData(parsedData);
-      console.log(userData)
-      // document.querySelector(".profile-title").textContent =
-      //   parsedData.firstName + " " + parsedData.lastName;
-      // document.querySelector(".profile-mail").innerHTML += parsedData.email;
-      // let house =
-      //   parsedData.street +
-      //   " " +
-      //   parsedData.houseNumber +
-      //   ", " +
-      //   parsedData.city;
-      // document.querySelector(".profile-home").innerHTML += house;
-      // document.querySelector(".profile-birthDay").innerHTML +=
-      //   parsedData.birthDay;
     }
   }, []);
 
@@ -55,7 +39,7 @@ function Profile({ user, setIsConnected, setShowEditDetails, setUserToEdit }) {
             justifyContent: "center",
             alignItems: "center",
             borderRadius: "15px",
-            margin:"50px 0px",
+            margin: "50px 0px",
             boxShadow: "3px 3px 5px #87878729",
             backgroundColor: "#fff",
           }}
@@ -79,7 +63,9 @@ function Profile({ user, setIsConnected, setShowEditDetails, setUserToEdit }) {
                 direction: "rtl",
               }}
             >
-              <h2 className="profile-title">{user.firstName} {user.lastName} </h2>
+              <h2 className="profile-title">
+                {user.firstName} {user.lastName}{" "}
+              </h2>
               <span className="profile-mail">
                 <SvgIcon className="icon" component={MailOutlineRoundedIcon} />
                 {user.email}
@@ -90,7 +76,11 @@ function Profile({ user, setIsConnected, setShowEditDetails, setUserToEdit }) {
               </span>
               <span className="profile-birthDay">
                 <SvgIcon className="icon" component={CakeRoundedIcon} />
-                {user.birthDay}
+                {user.birthDay.split("-")[2] +
+                  "-" +
+                  user.birthDay.split("-")[1] +
+                  "-" +
+                  user.birthDay.split("-")[0]}
               </span>
             </Box>
             <Box // IMAGE CONTAINER
@@ -125,7 +115,11 @@ function Profile({ user, setIsConnected, setShowEditDetails, setUserToEdit }) {
             >
               <Button variant="contained">למשחק</Button>
             </a>
-            <Button onClick={() => onEdit()} style={{ backgroundColor: "grey" }} variant="contained">
+            <Button
+              onClick={() => onEdit()}
+              style={{ backgroundColor: "grey" }}
+              variant="contained"
+            >
               עדכון פרטים
             </Button>
           </div>

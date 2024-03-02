@@ -7,11 +7,16 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
-import EditIcon from '@mui/icons-material/Edit';
+import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import EditIcon from "@mui/icons-material/Edit";
 import { Avatar, Button, SvgIcon } from "@mui/material";
 
-export default function SystemAdmin({ users, setUsers, setShowEditDetails, setUserToEdit }) {
+export default function SystemAdmin({
+  users,
+  setUsers,
+  setShowEditDetails,
+  setUserToEdit,
+}) {
   const deleteUser = (mail) => {
     const updatedUsers = users.filter((user) => user.email !== mail);
     setUsers(updatedUsers);
@@ -19,9 +24,9 @@ export default function SystemAdmin({ users, setUsers, setShowEditDetails, setUs
   };
 
   const onShowEdit = (user) => {
-    setUserToEdit(user)
-    setShowEditDetails(state => !state)
-  }
+    setUserToEdit(user);
+    setShowEditDetails((state) => !state);
+  };
 
   return (
     <Box
@@ -38,7 +43,10 @@ export default function SystemAdmin({ users, setUsers, setShowEditDetails, setUs
       }}
     >
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650, borderRadius:"15px" }} aria-label="simple table">
+        <Table
+          sx={{ minWidth: 650, borderRadius: "15px" }}
+          aria-label="simple table"
+        >
           <TableHead>
             <TableRow>
               <TableCell></TableCell>
@@ -54,8 +62,12 @@ export default function SystemAdmin({ users, setUsers, setShowEditDetails, setUs
             {users.map((user) => (
               <TableRow key={user.email}>
                 <TableCell>
-                  <Button onClick={() => onShowEdit(user)}><SvgIcon  component={EditIcon} /></Button>
-                  <Button onClick={() => deleteUser(user.email)}><SvgIcon  component={RemoveCircleIcon} /></Button>
+                  <Button onClick={() => onShowEdit(user)}>
+                    <SvgIcon component={EditIcon} />
+                  </Button>
+                  <Button onClick={() => deleteUser(user.email)}>
+                    <SvgIcon component={RemoveCircleIcon} />
+                  </Button>
                 </TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>
@@ -66,11 +78,11 @@ export default function SystemAdmin({ users, setUsers, setShowEditDetails, setUs
                 <TableCell>{user.userName}</TableCell>
                 <TableCell>
                   <Avatar
-                sx={{ width: "50px", height: "50px", fontSize: "30px" }}
-                alt={user.firstName + " " + user.lastName}
-                src={user.img}
-              />
-              </TableCell>
+                    sx={{ width: "50px", height: "50px", fontSize: "30px" }}
+                    alt={user.firstName + " " + user.lastName}
+                    src={user.img}
+                  />
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

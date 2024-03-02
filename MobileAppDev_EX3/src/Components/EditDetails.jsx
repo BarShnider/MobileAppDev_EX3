@@ -6,6 +6,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { styled } from "@mui/material/styles";
 import { useState } from "react";
 import dayjs from "dayjs";
+import Paper from "@mui/material/Paper";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -19,21 +20,33 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-function EditDetails({userToEdit,usersFromStorage, setUsers}) {
-  console.log(userToEdit)
-  const {userName, email, password, passwordValidate, birthDay, city, houseNumber,street,firstName,lastName,img} = userToEdit
+function EditDetails({ userToEdit, usersFromStorage, setUsers, setEditUser }) {
+  const {
+    userName,
+    email,
+    password,
+    passwordValidate,
+    birthDay,
+    city,
+    houseNumber,
+    street,
+    firstName,
+    lastName,
+    img,
+  } = userToEdit;
+
   const [userData, setUserData] = useState({
     userName: userName || "",
     email: email || "",
-    password:  password || "",
-    passwordValidate: passwordValidate || "",
+    password: "",
+    passwordValidate: "",
     birthDay: birthDay || "",
     city: city || null,
     houseNumber: houseNumber || "",
     street: street || "",
     firstName: firstName || "",
     lastName: lastName || "",
-    img: img ||null,
+    img: img || null,
   });
   const [userErrors, setUserErrors] = useState({
     userName: "",
@@ -46,72 +59,8 @@ function EditDetails({userToEdit,usersFromStorage, setUsers}) {
     firstName: "",
     lastName: "",
     img: "",
+    city: "",
   });
-
-  
-  // const editUser = () => {
-  //   let flag = true;
-  //   const requiredFields = [
-  //     "userName",
-  //     "email",
-  //     "password",
-  //     "passwordValidate",
-  //     "birthDay",
-  //     "city",
-  //     "houseNumber",
-  //     "street",
-  //     "firstName",
-  //     "lastName",
-  //   ];
-  //   setUserErrors({});
-  //   for (let key of requiredFields) {
-  //     if (!userData[key]) {
-  //       flag = false; // Set flag to false if a required field is missing
-  //       setUserErrors((prevErrors) => ({
-  //         ...prevErrors,
-  //         [key]: "שדה חובה",
-  //       }));
-  //     } else if (
-  //       (key === "email" || key === "userName") &&
-  //       userErrors[key] !== ""
-  //     ) {
-  //       flag = false;
-  //     }
-  //   }
-  //   if (flag) {
-  //     // Find the index of the user in the users array
-  //     const userIndex = usersFromStorage.findIndex(
-  //       (user) => user.email === userToEdit.email
-  //     );
-
-  //     // Update the user in the users array
-  //     const updatedUsers = [...usersFromStorage];
-  //     updatedUsers[userIndex] = { ...userData };
-
-  //     // Update localStorage
-  //     localStorage.setItem("users", JSON.stringify(updatedUsers));
-
-  //     // Update the users state
-  //     setUsers(updatedUsers);
-
-  //     // Reset form data and errors
-  //     setUserData({
-  //       userName: "",
-  //       email: "",
-  //       password: "",
-  //       passwordValidate: "",
-  //       birthDay: "",
-  //       city: null,
-  //       houseNumber: "",
-  //       street: "",
-  //       firstName: "",
-  //       lastName: "",
-  //       img: null,
-  //     });
-  //     setUserErrors({});
-  //   }
-  // };
-
 
   const regexPatternNumbers = /^[1-9]\d*$/; // any positive number except 0
   const regexPatternPassword =
@@ -202,28 +151,34 @@ function EditDetails({userToEdit,usersFromStorage, setUsers}) {
     "כפר מצר",
   ];
 
+  //handles Img
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
-    
-    // Validate the image file
     if (file) {
       const allowedTypes = ["image/jpeg", "image/jpg"];
+      const maxSize = 5 * 1024 * 1024; // 5 Megabytes
       if (!allowedTypes.includes(file.type)) {
         setUserErrors({
           ...userErrors,
           img: "יש להעלות תמונה בפורמט JPG או JPEG בלבד",
         });
+      } else if (file.size > maxSize) {
+        // Add a new error message or update the existing one for file size
+        setUserErrors({
+          ...userErrors,
+          img: "התמונה גדולה מדי. אנא העלה תמונה שגודלה פחות מ-5MB.",
+        });
       } else {
         reader.readAsDataURL(file);
         reader.onload = () => {
-          // Set the 'img' field in userData to the Base64 string of the uploaded image
           setUserData({ ...userData, img: reader.result });
         };
-        setUserErrors({ ...userErrors, img: "" }); // Clear the image error
+        setUserErrors({ ...userErrors, img: "" }); // Clear any previous error
       }
     }
   };
+
   // checks if inputs are valid
   const handleInputChange = (event, field) => {
     const input = event.target.value;
@@ -308,7 +263,7 @@ function EditDetails({userToEdit,usersFromStorage, setUsers}) {
     }
   };
 
-  const registerUser = () => {
+  const editUser = () => {
     let flag = true;
     const requiredFields = [
       "userName",
@@ -317,35 +272,36 @@ function EditDetails({userToEdit,usersFromStorage, setUsers}) {
       "passwordValidate",
       "birthDay",
       "city",
+      "img",
       "houseNumber",
       "street",
       "firstName",
       "lastName",
     ];
-    setUserErrors({});
     for (let key of requiredFields) {
-      if (!userData[key]) {
+      if (!userData[key] || userData[key] === null) {
         flag = false; // Set flag to false if a required field is missing
         setUserErrors((prevErrors) => ({
           ...prevErrors,
           [key]: "שדה חובה",
         }));
-      } else if (
-        (key === "email" || key === "userName") &&
-        userErrors[key] !== ""
-      ) {
-        flag = false;
       }
     }
+    console.log("1");
     if (flag) {
       const { passwordValidate, ...userWithoutPasswordValidate } = userData;
       const newUser = { ...userWithoutPasswordValidate };
-      addNewUser((prevUsers) => [...prevUsers, newUser]);
-      const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
-      localStorage.setItem(
-        "users",
-        JSON.stringify([...existingUsers, newUser])
+      const userIndex = usersFromStorage.findIndex(
+        (user) => user.email === userToEdit.email
       );
+      setEditUser(false);
+      const jsonData = JSON.stringify(newUser);
+      sessionStorage.setItem("connectedUser", jsonData);
+      let usersAndEdited = [...usersFromStorage];
+      usersAndEdited[userIndex] = newUser;
+      //until here works
+      localStorage.setItem("users", JSON.stringify(usersAndEdited));
+      setUsers(usersAndEdited);
       setUserData({
         userName: "",
         email: "",
@@ -388,8 +344,7 @@ function EditDetails({userToEdit,usersFromStorage, setUsers}) {
     } else {
       setUserErrors({
         ...userErrors,
-        birthDay:
-          "תאריך לא תקין, יש לוודא שהפרטים נכונים והינך מעל 18 ",
+        birthDay: "תאריך לא תקין, יש לוודא שהפרטים נכונים והינך מעל 18 ",
       });
       setUserData({ ...userData, birthDay: "" });
     }
@@ -455,9 +410,8 @@ function EditDetails({userToEdit,usersFromStorage, setUsers}) {
     setUserErrors({ ...userErrors, city: "" });
   };
 
-  
   return (
- <>
+    <>
       <h1 className="header">{userToEdit.userName} עריכת פרטים עבור </h1>
       <div className="container ">
         <Box
@@ -501,6 +455,7 @@ function EditDetails({userToEdit,usersFromStorage, setUsers}) {
               <DatePicker
                 sx={{ width: "100%" }}
                 variant="outlined"
+                value={userData.birthDay ? dayjs(userData.birthDay) : null} // Set the initial value
                 onChange={(newValue) => handleDateChange(newValue)}
                 label="בחירת תאריך"
                 slotProps={{
@@ -519,6 +474,7 @@ function EditDetails({userToEdit,usersFromStorage, setUsers}) {
               sx={{ width: "300px" }}
               disablePortal
               id="combo-box"
+              dir="rtl"
               options={cityOptions}
               value={userData.city || null}
               renderInput={(params) => (
@@ -530,6 +486,11 @@ function EditDetails({userToEdit,usersFromStorage, setUsers}) {
                 />
               )}
               onChange={(event, newValue) => handleCity(newValue)}
+              PaperComponent={({ children }) => (
+                <Paper style={{ direction: "rtl" }} elevation={1}>
+                  {children}
+                </Paper>
+              )}
             />
 
             <TextField //STREET
@@ -537,6 +498,7 @@ function EditDetails({userToEdit,usersFromStorage, setUsers}) {
               sx={{ width: "300px" }}
               id="street"
               label="רחוב"
+              dir="rtl"
               variant="outlined"
               error={!!userErrors.street}
               helperText={userErrors.street}
@@ -550,10 +512,12 @@ function EditDetails({userToEdit,usersFromStorage, setUsers}) {
               helperText={userErrors.houseNumber}
               sx={{ width: "300px" }}
               id="house-num"
+              dir="rtl"
               label="מספר בית"
               variant="outlined"
             />
           </Box>
+
           <Box
             sx={{
               display: "flex",
@@ -607,14 +571,18 @@ function EditDetails({userToEdit,usersFromStorage, setUsers}) {
               startIcon={<CloudUploadIcon />} //.       Need TO HANDLE IMG
             >
               העלה תמונה
-              <VisuallyHiddenInput type="file" accept="image/jpeg, image/jpg" onChange={handleImageChange} />
-              
+              <VisuallyHiddenInput
+                type="file"
+                accept="image/jpeg, image/jpg"
+                onChange={handleImageChange}
+              />
             </Button>
 
             <TextField //FIRST NAME
               value={userData.firstName}
               sx={{ width: "300px" }}
               id="first-name"
+              dir="rtl"
               label="שם פרטי"
               variant="outlined"
               error={!!userErrors.firstName}
@@ -626,6 +594,7 @@ function EditDetails({userToEdit,usersFromStorage, setUsers}) {
               value={userData.lastName}
               sx={{ width: "300px" }}
               id="last-name"
+              dir="rtl"
               label="שם משפחה"
               variant="outlined"
               error={!!userErrors.lastName}

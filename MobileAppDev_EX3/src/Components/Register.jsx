@@ -8,6 +8,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useState } from "react";
 import dayjs from "dayjs";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -20,8 +22,6 @@ const VisuallyHiddenInput = styled("input")({
   whiteSpace: "nowrap",
   width: 1,
 });
-
-
 
 function Register({ addNewUser, usersFromStorage }) {
   const [userData, setUserData] = useState({
@@ -48,6 +48,7 @@ function Register({ addNewUser, usersFromStorage }) {
     firstName: "",
     lastName: "",
     img: "",
+    city: "",
   });
 
   const regexPatternNumbers = /^[1-9]\d*$/; // any positive number except 0
@@ -139,28 +140,35 @@ function Register({ addNewUser, usersFromStorage }) {
     "כפר מצר",
   ];
 
+  //handles Img
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
-    
-    // Validate the image file
     if (file) {
       const allowedTypes = ["image/jpeg", "image/jpg"];
+      const maxSize = 5 * 1024 * 1024; // 5 Megabytes
+
       if (!allowedTypes.includes(file.type)) {
         setUserErrors({
           ...userErrors,
           img: "יש להעלות תמונה בפורמט JPG או JPEG בלבד",
         });
+      } else if (file.size > maxSize) {
+        // Add a new error message or update the existing one for file size
+        setUserErrors({
+          ...userErrors,
+          img: "התמונה גדולה מדי. אנא העלה תמונה שגודלה פחות מ-5MB.",
+        });
       } else {
         reader.readAsDataURL(file);
         reader.onload = () => {
-          // Set the 'img' field in userData to the Base64 string of the uploaded image
           setUserData({ ...userData, img: reader.result });
         };
-        setUserErrors({ ...userErrors, img: "" }); // Clear the image error
+        setUserErrors({ ...userErrors, img: "" }); // Clear any previous error
       }
     }
   };
+
   // checks if inputs are valid
   const handleInputChange = (event, field) => {
     const input = event.target.value;
@@ -247,6 +255,7 @@ function Register({ addNewUser, usersFromStorage }) {
 
   const registerUser = () => {
     let flag = true;
+    console.log(userData);
     const requiredFields = [
       "userName",
       "email",
@@ -258,24 +267,22 @@ function Register({ addNewUser, usersFromStorage }) {
       "street",
       "firstName",
       "lastName",
+      "img",
     ];
-    setUserErrors({});
     for (let key of requiredFields) {
-      if (!userData[key]) {
+      console.log(key);
+      if (userData[key] == "" || userData[key] === null) {
+        console.log(userData[key]);
         flag = false; // Set flag to false if a required field is missing
         setUserErrors((prevErrors) => ({
           ...prevErrors,
           [key]: "שדה חובה",
         }));
-      } else if (
-        (key === "email" || key === "userName") &&
-        userErrors[key] !== ""
-      ) {
-        flag = false;
-      }
+      } 
     }
     if (flag) {
       const { passwordValidate, ...userWithoutPasswordValidate } = userData;
+      console.log(userWithoutPasswordValidate);
       const newUser = { ...userWithoutPasswordValidate };
       addNewUser((prevUsers) => [...prevUsers, newUser]);
       const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
@@ -325,8 +332,7 @@ function Register({ addNewUser, usersFromStorage }) {
     } else {
       setUserErrors({
         ...userErrors,
-        birthDay:
-          "תאריך לא תקין, יש לוודא שהפרטים נכונים והינך מעל 18 ",
+        birthDay: "תאריך לא תקין, יש לוודא שהפרטים נכונים והינך מעל 18 ",
       });
       setUserData({ ...userData, birthDay: "" });
     }
@@ -392,8 +398,6 @@ function Register({ addNewUser, usersFromStorage }) {
     setUserErrors({ ...userErrors, city: "" });
   };
 
-  
-
   return (
     <>
       <h1 className="header">הרשמה</h1>
@@ -456,6 +460,7 @@ function Register({ addNewUser, usersFromStorage }) {
               sx={{ width: "300px" }}
               disablePortal
               id="combo-box"
+              dir="rtl"
               options={cityOptions}
               value={userData.city || null}
               renderInput={(params) => (
@@ -467,6 +472,11 @@ function Register({ addNewUser, usersFromStorage }) {
                 />
               )}
               onChange={(event, newValue) => handleCity(newValue)}
+              PaperComponent={({ children }) => (
+                <Paper style={{ direction: "rtl" }} elevation={1}>
+                  {children}
+                </Paper>
+              )}
             />
 
             <TextField //STREET
@@ -474,6 +484,7 @@ function Register({ addNewUser, usersFromStorage }) {
               sx={{ width: "300px" }}
               id="street"
               label="רחוב"
+              dir="rtl"
               variant="outlined"
               error={!!userErrors.street}
               helperText={userErrors.street}
@@ -488,6 +499,7 @@ function Register({ addNewUser, usersFromStorage }) {
               sx={{ width: "300px" }}
               id="house-num"
               label="מספר בית"
+              dir="rtl"
               variant="outlined"
             />
           </Box>
@@ -537,22 +549,42 @@ function Register({ addNewUser, usersFromStorage }) {
               onBlur={(event) => handleSecondPass(event.target.value)}
             />
 
-            <Button // IMG
-              sx={{ width: "300px" }}
-              component="label"
-              variant="contained"
-              startIcon={<CloudUploadIcon />} //.       Need TO HANDLE IMG
-            >
-              העלה תמונה
-              <VisuallyHiddenInput type="file" accept="image/jpeg, image/jpg" onChange={handleImageChange} />
-              
-            </Button>
+            {/* IMG upload Button */}
+            <Box sx={{ width: "300px" }}>
+              {" "}
+              <Button // IMG Upload Button
+                sx={{
+                  width: "100%", // Use 100% of the container width
+                }}
+                component="label"
+                variant="contained"
+                startIcon={<CloudUploadIcon />}
+              >
+                העלה תמונה
+                <VisuallyHiddenInput
+                  type="file"
+                  accept="image/jpeg, image/jpg"
+                  onChange={handleImageChange}
+                />
+              </Button>
+              {userErrors.img && (
+                <Typography
+                  variant="caption"
+                  color="error"
+                  sx={{ mt: 1 }}
+                  dir="rtl"
+                >
+                  {userErrors.img}
+                </Typography>
+              )}
+            </Box>
 
             <TextField //FIRST NAME
               value={userData.firstName}
               sx={{ width: "300px" }}
               id="first-name"
               label="שם פרטי"
+              dir="rtl"
               variant="outlined"
               error={!!userErrors.firstName}
               helperText={userErrors.firstName}
@@ -564,6 +596,7 @@ function Register({ addNewUser, usersFromStorage }) {
               sx={{ width: "300px" }}
               id="last-name"
               label="שם משפחה"
+              dir="rtl"
               variant="outlined"
               error={!!userErrors.lastName}
               helperText={userErrors.lastName}
