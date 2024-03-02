@@ -287,7 +287,9 @@ function EditDetails({ userToEdit, usersFromStorage, setUsers, setEditUser }) {
         }));
       }
     }
+    console.log(userData)
     console.log("1");
+    console.log("flag:" , flag)
     if (flag) {
       const { passwordValidate, ...userWithoutPasswordValidate } = userData;
       const newUser = { ...userWithoutPasswordValidate };
@@ -568,7 +570,7 @@ function EditDetails({ userToEdit, usersFromStorage, setUsers, setEditUser }) {
               sx={{ width: "300px" }}
               component="label"
               variant="contained"
-              startIcon={<CloudUploadIcon />} //.       Need TO HANDLE IMG
+              startIcon={<CloudUploadIcon />}
             >
               העלה תמונה
               <VisuallyHiddenInput
