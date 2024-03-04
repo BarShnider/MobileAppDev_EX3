@@ -11,12 +11,7 @@ import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import EditIcon from "@mui/icons-material/Edit";
 import { Avatar, Button, SvgIcon } from "@mui/material";
 
-export default function SystemAdmin({
-  users,
-  setUsers,
-  setShowEditDetails,
-  setUserToEdit,
-}) {
+export default function SystemAdmin({users,setUsers,setShowEditDetails,setUserToEdit,setIsConnected}) {
   const deleteUser = (mail) => {
     const updatedUsers = users.filter((user) => user.email !== mail);
     setUsers(updatedUsers);
@@ -29,6 +24,9 @@ export default function SystemAdmin({
   };
 
   return (
+    <>
+    
+    <h1 className="header">ניהול משתמשים</h1>
     <Box
       sx={{
         display: "flex",
@@ -36,7 +34,7 @@ export default function SystemAdmin({
         gap: "30px",
         border: "1px solid #dedede",
         padding: "15px",
-        margin: "50px 100px",
+        margin: "20px 100px",
         borderRadius: "15px",
         boxShadow: "3px 3px 5px #87878729",
         backgroundColor: "#fff",
@@ -88,6 +86,14 @@ export default function SystemAdmin({
           </TableBody>
         </Table>
       </TableContainer>
+      <Button
+              style={{ backgroundColor: "red",width: "300px",margin:"auto"}}
+              variant="contained"
+              onClick={() => setIsConnected( isConnected => !isConnected)}
+            >
+              התנתק
+            </Button>
     </Box>
+    </>
   );
 }

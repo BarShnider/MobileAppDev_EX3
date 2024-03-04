@@ -2,13 +2,7 @@
 import { Box, Button, TextField } from "@mui/material";
 import { useState } from "react";
 
-function Login({
-  users,
-  setIsConnected,
-  setUserAdmin,
-  setConnectedUser,
-  setShowEditDetails,
-}) {
+function Login({users,setIsConnected,setUserAdmin,setConnectedUser,setShowEditDetails}) {
   const [userName, setUserName] = useState("");
   const [errorName, setErrorName] = useState("");
 

@@ -11,6 +11,7 @@ function Profile({ user, setIsConnected, setShowEditDetails, setUserToEdit }) {
   const onEdit = () => {
     setUserToEdit(user);
     setShowEditDetails((state) => !state);
+    logoutUser();
   };
   useEffect(() => {
     const storedData = sessionStorage.getItem("connectedUser");
@@ -20,7 +21,7 @@ function Profile({ user, setIsConnected, setShowEditDetails, setUserToEdit }) {
     }
   }, []);
 
-  const logOut = () => {
+  const logoutUser = () => {
     sessionStorage.removeItem("connectedUser");
     setIsConnected(false);
   };
@@ -89,7 +90,7 @@ function Profile({ user, setIsConnected, setShowEditDetails, setUserToEdit }) {
                 flexDirection: "row",
                 justifyContent: "flex-start",
                 backgroundColor: "#fff",
-                width: "50%", // Adjust as needed
+                width: "50%", 
                 padding: "20px",
               }}
             >
@@ -104,7 +105,7 @@ function Profile({ user, setIsConnected, setShowEditDetails, setUserToEdit }) {
             <Button
               style={{ backgroundColor: "red" }}
               variant="contained"
-              onClick={logOut}
+              onClick={logoutUser}
             >
               התנתק
             </Button>

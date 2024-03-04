@@ -4,6 +4,7 @@ import Profile from "./Components/Profile";
 import Register from "./Components/Register";
 import EditDetails from "./Components/EditDetails";
 import SystemAdmin from "./Components/SystemAdmin";
+import 'animate.css';
 
 // https://colorhunt.co/palette/c4dfdfd2e9e9e3f4f4f8f6f4
 function App() {
@@ -33,14 +34,15 @@ function App() {
 
   return (
     <>
-      <Register addNewUser={setUsers} usersFromStorage={users} />
-      <Login
+      {!isConnected && <Register addNewUser={setUsers} usersFromStorage={users} />}
+      {!isConnected && <Login
         users={users}
         setIsConnected={setIsConnected}
+        
         setUserAdmin={setAdminOrUser}
         setConnectedUser={setConnectedUser}
         setShowEditDetails={setShowEditDetails}
-      />
+      />}
       {isConnected ? (
         adminOrUser ? (
           <Profile
@@ -55,6 +57,7 @@ function App() {
             setShowEditDetails={setShowEditDetails}
             setUserToEdit={setUserToEdit}
             setUsers={setUsers}
+            setIsConnected={setIsConnected}
           />
         )
       ) : (
