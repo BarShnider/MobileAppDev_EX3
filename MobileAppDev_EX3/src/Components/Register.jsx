@@ -24,6 +24,7 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 function Register({ addNewUser, usersFromStorage }) {
+  // State for managing user data and errors
   const [userData, setUserData] = useState({
     userName: "",
     email: "",
@@ -51,14 +52,14 @@ function Register({ addNewUser, usersFromStorage }) {
     city: "",
   });
 
+  // Regular expressions for input validation
   const regexPatternNumbers = /^[1-9]\d*$/; // any positive number except 0
-  const regexPatternPassword =
-    /^(?=.*[!@#$%^&*()_+{}|:"<>?])(?=.*[A-Z])(?=.*\d).{7,12}$/;
-  const regexPatternUserName =
-    /^[a-zA-Z0-9\u00C0-\u00FF!@#$%^&*()_+{}|:"<>?]{1,60}$/; // limited to length 60
-  const regexPatternHebrew = /^[\u0590-\u05FF]+$/;
-  const regexPatternEmail = /^[a-zA-Z@]+\.com$/;
+  const regexPatternPassword = /^(?=.*[!@#$%^&*()_+{}|:"<>?])(?=.*[A-Z])(?=.*\d).{7,12}$/;
+  const regexPatternUserName = /^[a-zA-Z0-9\u00C0-\u00FF!@#$%^&*()_+{}|:"<>?]{1,60}$/; // limited to length 60
+  const regexPatternHebrew = /^[\u0590-\u05FF]+$/; // Hebrew characters pattern
+  const regexPatternEmail = /^[a-zA-Z@]+\.com$/;  // Email pattern
 
+  // Array of city options
   const cityOptions = [
     "חדרה",
     "נתניה",
@@ -140,7 +141,8 @@ function Register({ addNewUser, usersFromStorage }) {
     "כפר מצר",
   ];
 
-  //handles Img
+  // This function handles the event when a user uploads an image for their profile.
+  // It validates the image file format and size, then updates the userData state with the image data.
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
@@ -154,7 +156,6 @@ function Register({ addNewUser, usersFromStorage }) {
           img: "יש להעלות תמונה בפורמט JPG או JPEG בלבד",
         });
       } else if (file.size > maxSize) {
-        // Add a new error message or update the existing one for file size
         setUserErrors({
           ...userErrors,
           img: "התמונה גדולה מדי. אנא העלה תמונה שגודלה פחות מ-5MB.",
@@ -169,13 +170,16 @@ function Register({ addNewUser, usersFromStorage }) {
     }
   };
 
-  // checks if inputs are valid
+  // This function handles the change event for input fields.
+  // It updates the corresponding field in the userData state and validates the input.
   const handleInputChange = (event, field) => {
-    const input = event.target.value;
-    validateInput(input, field);
-    setUserData({ ...userData, [field]: input });
+  const input = event.target.value;
+  validateInput(input, field);
+  setUserData({ ...userData, [field]: input });
   };
 
+  // This function validates the input value based on the specified regex pattern for each field.
+  // It updates the userErrors state with any validation errors.
   const validateInput = (value, fieldError) => {
     switch (fieldError) {
       case "password":
@@ -191,15 +195,15 @@ function Register({ addNewUser, usersFromStorage }) {
         break;
 
       case "userName": {
-        let errorUserName = ""; // Now safely declared within a block scope
+        let errorUserName = ""; 
         if (!regexPatternUserName.test(value)) {
           errorUserName =
             "ניתן למלא אותיות לועזיות בלבד, מספרים ותווים מיוחדים, לכל היותר באורך 60 תווים.";
         } else {
           const isUserNameTaken = usersFromStorage.some(
             (user) => user.userName === value
-          );
-          if (isUserNameTaken) {
+          ) || value === "admin";
+          if (isUserNameTaken ) {
             errorUserName = "משתמש כבר קיים";
           }
         }
@@ -253,9 +257,10 @@ function Register({ addNewUser, usersFromStorage }) {
     }
   };
 
+  // This function registers a new user if all required fields are filled out and validated.
+  // It adds the new user to the usersFromStorage and updates the local storage accordingly.
   const registerUser = () => {
     let flag = true;
-    console.log(userData);
     const requiredFields = [
       "userName",
       "email",
@@ -270,9 +275,7 @@ function Register({ addNewUser, usersFromStorage }) {
       "img",
     ];
     for (let key of requiredFields) {
-      console.log(key);
       if (userData[key] == "" || userData[key] === null) {
-        console.log(userData[key]);
         flag = false; // Set flag to false if a required field is missing
         setUserErrors((prevErrors) => ({
           ...prevErrors,
@@ -282,7 +285,6 @@ function Register({ addNewUser, usersFromStorage }) {
     }
     if (flag) {
       const { passwordValidate, ...userWithoutPasswordValidate } = userData;
-      console.log(userWithoutPasswordValidate);
       const newUser = { ...userWithoutPasswordValidate };
       addNewUser((prevUsers) => [...prevUsers, newUser]);
       const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
@@ -319,6 +321,8 @@ function Register({ addNewUser, usersFromStorage }) {
     }
   };
 
+  // This function handles the change event for the birth date field.
+  // It validates the selected date to ensure the user is at least 18 years old.
   const handleDateChange = (newValue) => {
     const selectedDate = dayjs(newValue);
     const currentDate = dayjs();
@@ -337,7 +341,9 @@ function Register({ addNewUser, usersFromStorage }) {
       setUserData({ ...userData, birthDay: "" });
     }
   };
-
+  
+  // This function validates the second password input to ensure it matches the first password.
+  // It updates the userErrors state with any validation errors.
   const handleSecondPass = (secondPass) => {
     //checking if the second password equals to the first
     if (secondPass === "") {
@@ -360,6 +366,9 @@ function Register({ addNewUser, usersFromStorage }) {
     }
   };
 
+  // This function validates the email input field.
+  // It checks the format of the email address and ensures it is not already in use.
+  // It updates the userErrors state with any validation errors.
   const handleEmail = (email) => {
     // handles with email
     if (email === "") {
@@ -393,6 +402,8 @@ function Register({ addNewUser, usersFromStorage }) {
     }
   };
 
+  // This function handles the selection of a city from the autocomplete options.
+  // It updates the userData state with the selected city.
   const handleCity = (selectedCity) => {
     setUserData({ ...userData, city: selectedCity });
     setUserErrors({ ...userErrors, city: "" });
@@ -443,6 +454,7 @@ function Register({ addNewUser, usersFromStorage }) {
                 sx={{ width: "100%" }}
                 variant="outlined"
                 onChange={(newValue) => handleDateChange(newValue)}
+                value={userData.birthDay ? dayjs(userData.birthDay) : null}
                 label="בחירת תאריך"
                 slotProps={{
                   textField: {
@@ -494,7 +506,7 @@ function Register({ addNewUser, usersFromStorage }) {
             <TextField //HOUSE NUMBER
               value={userData.houseNumber}
               onChange={(event) => handleInputChange(event, "houseNumber")}
-              error={!!userErrors.houseNumber} // Converts string to boolean
+              error={!!userErrors.houseNumber} 
               helperText={userErrors.houseNumber}
               sx={{ width: "300px" }}
               id="house-num"
@@ -549,12 +561,11 @@ function Register({ addNewUser, usersFromStorage }) {
               onBlur={(event) => handleSecondPass(event.target.value)}
             />
 
-            {/* IMG upload Button */}
             <Box sx={{ width: "300px" }}>
               {" "}
               <Button // IMG Upload Button
                 sx={{
-                  width: "100%", // Use 100% of the container width
+                  width: "100%",
                 }}
                 component="label"
                 variant="contained"

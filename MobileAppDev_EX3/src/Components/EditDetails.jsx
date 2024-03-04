@@ -20,7 +20,7 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-function EditDetails({ userToEdit, usersFromStorage, setUsers, setEditUser }) {
+function EditDetails({adminOrUser, userToEdit, usersFromStorage, setUsers, setEditUser,logoutUser, setShowEditDetails}) {
   const {
     userName,
     email,
@@ -151,7 +151,8 @@ function EditDetails({ userToEdit, usersFromStorage, setUsers, setEditUser }) {
     "כפר מצר",
   ];
 
-  //handles Img
+  // This function handles the event when a user uploads an image for their profile.
+  // It validates the image file format and size, then updates the userData state with the image data.
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
@@ -179,13 +180,16 @@ function EditDetails({ userToEdit, usersFromStorage, setUsers, setEditUser }) {
     }
   };
 
-  // checks if inputs are valid
+  // This function handles the change event for input fields.
+  // It updates the corresponding field in the userData state and validates the input.
   const handleInputChange = (event, field) => {
     const input = event.target.value;
     validateInput(input, field);
     setUserData({ ...userData, [field]: input });
   };
 
+  // This function validates the input value based on the specified regex pattern for each field.
+  // It updates the userErrors state with any validation errors.
   const validateInput = (value, fieldError) => {
     switch (fieldError) {
       case "password":
@@ -207,8 +211,8 @@ function EditDetails({ userToEdit, usersFromStorage, setUsers, setEditUser }) {
             "ניתן למלא אותיות לועזיות בלבד, מספרים ותווים מיוחדים, לכל היותר באורך 60 תווים.";
         } else {
           const isUserNameTaken = usersFromStorage.some(
-            (user) => user.userName === value
-          );
+            (user) => user.userName === value 
+          )  || value === "admin";
           if (isUserNameTaken) {
             errorUserName = "משתמש כבר קיים";
           }
@@ -263,6 +267,8 @@ function EditDetails({ userToEdit, usersFromStorage, setUsers, setEditUser }) {
     }
   };
 
+  // This function edits user details if all required fields are filled out and validated.
+  // It updates the user data in the usersFromStorage and local storage, then resets the input fields and errors.
   const editUser = () => {
     let flag = true;
     const requiredFields = [
@@ -287,9 +293,7 @@ function EditDetails({ userToEdit, usersFromStorage, setUsers, setEditUser }) {
         }));
       }
     }
-    console.log(userData)
-    console.log("1");
-    console.log("flag:" , flag)
+
     if (flag) {
       const { passwordValidate, ...userWithoutPasswordValidate } = userData;
       const newUser = { ...userWithoutPasswordValidate };
@@ -304,6 +308,10 @@ function EditDetails({ userToEdit, usersFromStorage, setUsers, setEditUser }) {
       //until here works
       localStorage.setItem("users", JSON.stringify(usersAndEdited));
       setUsers(usersAndEdited);
+      if(adminOrUser){
+        logoutUser()
+      }
+      setShowEditDetails(false)
       setUserData({
         userName: "",
         email: "",
@@ -333,6 +341,8 @@ function EditDetails({ userToEdit, usersFromStorage, setUsers, setEditUser }) {
     }
   };
 
+  // This function handles the change event for the birth date field.
+  // It validates the selected date to ensure the user is at least 18 years old.
   const handleDateChange = (newValue) => {
     const selectedDate = dayjs(newValue);
     const currentDate = dayjs();
@@ -352,6 +362,8 @@ function EditDetails({ userToEdit, usersFromStorage, setUsers, setEditUser }) {
     }
   };
 
+  // This function validates the second password input to ensure it matches the first password.
+  // It updates the userErrors state with any validation errors.
   const handleSecondPass = (secondPass) => {
     //checking if the second password equals to the first
     if (secondPass === "") {
@@ -374,6 +386,9 @@ function EditDetails({ userToEdit, usersFromStorage, setUsers, setEditUser }) {
     }
   };
 
+  // This function validates the email input field.
+  // It checks the format of the email address and ensures it is not already in use.
+  // It updates the userErrors state with any validation errors.
   const handleEmail = (email) => {
     // handles with email
     if (email === "") {
@@ -406,7 +421,9 @@ function EditDetails({ userToEdit, usersFromStorage, setUsers, setEditUser }) {
       }
     }
   };
-
+  
+  // This function handles the selection of a city from the autocomplete options.
+  // It updates the userData state with the selected city.
   const handleCity = (selectedCity) => {
     setUserData({ ...userData, city: selectedCity });
     setUserErrors({ ...userErrors, city: "" });

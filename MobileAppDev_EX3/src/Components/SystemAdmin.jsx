@@ -12,12 +12,14 @@ import EditIcon from "@mui/icons-material/Edit";
 import { Avatar, Button, SvgIcon } from "@mui/material";
 
 export default function SystemAdmin({users,setUsers,setShowEditDetails,setUserToEdit,setIsConnected}) {
+  // Function to delete a user by email from the users array and update the state and local storage
   const deleteUser = (mail) => {
     const updatedUsers = users.filter((user) => user.email !== mail);
     setUsers(updatedUsers);
     localStorage.setItem("users", JSON.stringify(updatedUsers));
   };
 
+  // Function to show the edit details modal for a specific user
   const onShowEdit = (user) => {
     setUserToEdit(user);
     setShowEditDetails((state) => !state);
@@ -63,7 +65,7 @@ export default function SystemAdmin({users,setUsers,setShowEditDetails,setUserTo
                   <Button onClick={() => onShowEdit(user)}>
                     <SvgIcon component={EditIcon} />
                   </Button>
-                  <Button onClick={() => deleteUser(user.email)}>
+                  <Button onClick={() => {deleteUser(user.email);setShowEditDetails(false)}}>
                     <SvgIcon component={RemoveCircleIcon} />
                   </Button>
                 </TableCell>
@@ -89,7 +91,7 @@ export default function SystemAdmin({users,setUsers,setShowEditDetails,setUserTo
       <Button
               style={{ backgroundColor: "red",width: "300px",margin:"auto"}}
               variant="contained"
-              onClick={() => setIsConnected( isConnected => !isConnected)}
+              onClick={() => { setIsConnected(false); setShowEditDetails(false)}}
             >
               התנתק
             </Button>

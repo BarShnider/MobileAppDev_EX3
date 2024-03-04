@@ -5,26 +5,20 @@ import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import CakeRoundedIcon from "@mui/icons-material/CakeRounded";
 import { useEffect, useState } from "react";
 
-function Profile({ user, setIsConnected, setShowEditDetails, setUserToEdit }) {
-  const [userData, setUserData] = useState(); // check if needed
-
+function Profile({ user, setShowEditDetails, setUserToEdit,logoutUser }) {
+    
+  // This function sets the user data to be edited and toggles the visibility of the edit details modal.
   const onEdit = () => {
     setUserToEdit(user);
     setShowEditDetails((state) => !state);
+  };
+  
+  // This function logs out the current user and hides the edit details modal.
+  const onLogout = () => {
     logoutUser();
-  };
-  useEffect(() => {
-    const storedData = sessionStorage.getItem("connectedUser");
-    if (storedData) {
-      const parsedData = JSON.parse(storedData);
-      setUserData(parsedData);
-    }
-  }, []);
+    setShowEditDetails(false)
+  }
 
-  const logoutUser = () => {
-    sessionStorage.removeItem("connectedUser");
-    setIsConnected(false);
-  };
 
   return (
     <>
@@ -50,7 +44,7 @@ function Profile({ user, setIsConnected, setShowEditDetails, setUserToEdit }) {
               display: "flex",
               flexDirection: "row",
               width: "100%",
-              justifyContent: "space-between", // Adjust as needed
+              justifyContent: "space-between", 
               gap: "30px",
             }}
           >
@@ -58,7 +52,7 @@ function Profile({ user, setIsConnected, setShowEditDetails, setUserToEdit }) {
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                width: "50%", // Adjust as needed
+                width: "50%",
                 gap: "15px",
                 fontFamily: "heebo",
                 direction: "rtl",
@@ -105,7 +99,7 @@ function Profile({ user, setIsConnected, setShowEditDetails, setUserToEdit }) {
             <Button
               style={{ backgroundColor: "red" }}
               variant="contained"
-              onClick={logoutUser}
+              onClick={onLogout}
             >
               התנתק
             </Button>

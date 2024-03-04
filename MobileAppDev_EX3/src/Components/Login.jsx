@@ -3,15 +3,18 @@ import { Box, Button, TextField } from "@mui/material";
 import { useState } from "react";
 
 function Login({users,setIsConnected,setUserAdmin,setConnectedUser,setShowEditDetails}) {
+  
+  // State variables to manage user input and errors
   const [userName, setUserName] = useState("");
   const [errorName, setErrorName] = useState("");
-
   const [password, setPassword] = useState("");
   const [errorPassword, setErrorPassword] = useState("");
-
+  
+  // Regular expression pattern to validate user name
   const regexPatternUserName =
     /^[a-zA-Z0-9\u00C0-\u00FF!@#$%^&*()_+{}|:"<>?]{1,60}$/;
-
+  
+    // Handles changes in the user name input field. Validates the input against the regular expression pattern.
   const handleUserName = (event) => {
     const value = event.target.value;
     if (regexPatternUserName.test(value) || value === "") {
@@ -23,20 +26,22 @@ function Login({users,setIsConnected,setUserAdmin,setConnectedUser,setShowEditDe
       );
     }
   };
+  // Handles changes in the password input field. Updates the state variable for password accordingly.
   const handlePassword = (event) => {
     setPassword(event.target.value);
     setErrorPassword("");
   };
 
+  // Validates the user input for login. If the username and password match, sets the user as connected.
+  // If the user is an admin, sets the isAdmin state to true. Otherwise, displays appropriate error messages.
   const loginUser = () => {
-    if (userName === "admin" && password === "ad12343211ad") {
+    if (userName.toLowerCase() === "admin" && password === "ad12343211ad") {
       setIsConnected(true);
       setUserAdmin(false);
     } else {
       for (let user of users) {
-        if (user.userName === userName) {
+        if (user.userName.toLowerCase() === userName.toLowerCase()) {
           if (user.password === password) {
-            console.log("User Entered !!!!!!!!!!!!!!");
             const jsonData = JSON.stringify(user);
             sessionStorage.setItem("connectedUser", jsonData);
             setErrorName("");

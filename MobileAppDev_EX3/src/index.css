@@ -8,7 +8,6 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  /* height: 90vh; */
   width: 100%;
 }
 
@@ -17,8 +16,6 @@ body {
   font-family: "heebo", sans-serif;
   margin: 30px;
   color: #484848;
-  /* margin: 0px; */
-  /* margin-top: 20px; */
 }
 
 .profile-card {
@@ -52,20 +49,20 @@ body {
 .userButtons {
   display: flex;
   justify-content: center;
-  gap: 10px; /* Adjust as needed */
+  gap: 10px; 
 }
 
 .connectionProfile {
   display: flex;
-  justify-content: center; /* Horizontally center */
-  align-items: center; /* Vertically center */
+  justify-content: center; 
+  align-items: center; 
   margin-top: 15px;
   padding: 20px;
 }
 
 .connectionProfile p {
-  border-radius: 15px; /* Border radius */
-  padding: 20px 30px; /* Optional: Add padding around the text */
+  border-radius: 15px; 
+  padding: 20px 30px; 
   font-size: 24px;
   background-color: #ffffff;
   box-shadow: 3px 3px 5px #87878729;
