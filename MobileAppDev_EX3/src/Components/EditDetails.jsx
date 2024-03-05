@@ -342,7 +342,7 @@ function EditDetails({adminOrUser, userToEdit, usersFromStorage, setUsers, setEd
   };
 
   // This function handles the change event for the birth date field.
-  // It validates the selected date to ensure the user is at least 18 years old.
+  // It validates the selected date to ensure the user is at least 18 years old and under 120.
   const handleDateChange = (newValue) => {
     const selectedDate = dayjs(newValue);
     const currentDate = dayjs();
@@ -421,7 +421,7 @@ function EditDetails({adminOrUser, userToEdit, usersFromStorage, setUsers, setEd
       }
     }
   };
-  
+
   // This function handles the selection of a city from the autocomplete options.
   // It updates the userData state with the selected city.
   const handleCity = (selectedCity) => {
